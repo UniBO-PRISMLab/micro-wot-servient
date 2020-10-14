@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head> 	
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP 
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net/">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  -->
+
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <title>Embedded WoT Servient</title>
+  </head>
+  <body>
+    <!--
+    <h1>Embedded WoT Servient</h1>
+    We are using Node.js <span id="node-version"></span>,
+    Chromium <span id="chrome-version"></span>,
+    and Electron <span id="electron-version"></span>.
+  -->
+  
+  <!-- <div id="header">
+    
+  </div> -->
+
+  <div id="content">
+    <div id="leftbar">
+      <div id='editor_holder'></div>
+    </div>
+    
+    <div id="rightbar">
+      <i id='save' class="upper_buttons fa fa-2x fa-save" aria-hidden="true"></i>
+      <i id='load' class="upper_buttons fa fa-2x fa-folder-open" aria-hidden="true"></i>
+      <div id='builder'>
+        <div id='build_holder'></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <div>
+      <label class='labels' for="board">Choose target board:</label>
+      <select name="board" id="board">
+        <option value="esp32.txt">ESP32</option>
+        <option value="esp8266.txt">ESP8266</option>
+      </select>
+      <label for="flash" class='labels'>Flash board</label>
+      <input type="checkbox" id='flash'>
+
+      <select name="serial_port" id="serial_port"></select>
+
+      <button type="button" class='btn btn-sm btn-primary' id="build_compile_button">Build & compile</button>
+
+      <i id='hide_show' class="fa fa-eye-slash" aria-hidden="true"></i>
+    </div>
+    <div id='terminal_holder'></div>
+  </div>
+
+  <script src="./js/renderer.js"></script>
+  <script src="./js/terminal.js"></script>
+  <script src="./js/DOM.js"></script>
+    
+  </body>
+</html>

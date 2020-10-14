@@ -1,0 +1,36 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Py from start",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["start"]
+        },
+        {
+            "name": "Py build with args",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["build", 
+                "-T", "test5/test5.json",
+                "-t", "esp32.txt",
+                "-o", "test5/opt_test5.json"]
+        },
+        {
+            "name": "Debug Node Main Process",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "windows": {
+                "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            },
+            "args" : ["."],
+            "outputCapture": "std"
+        }
+    ]
+}

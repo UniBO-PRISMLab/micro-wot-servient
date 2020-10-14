@@ -1,0 +1,1933 @@
+{% macro updateTD() -%}
+{%- for item in td['forms'] if 'href' in item %}
+    {%- if item['href'] == 'ws' -%}
+    {%- do item.update(href='" + urlSocket + "/all/properties') -%}
+    {%- do global.update({'isWS':True}) -%}
+    {%- do protocols['td'].append('ws') -%}
+    {%- elif item['href'] == 'http' -%}
+    {%- do item.update(href='" + urlServer + "/all/properties') -%}
+    {%- do global.update({'isHTTP':True}) -%}
+    {%- do protocols['td'].append('http') -%}
+    {%- elif item['href'] == 'coap' -%}
+    {%- do item.update(href='" + urlCoap + "/all/properties') -%}
+    {%- do global.update({'isCOAP':True}) -%}
+    {%- do protocols['td'].append('coap') -%}
+    {%- endif -%}
+{%- endfor %}    
+{#- EndPoint Properties #}
+{%- for property in template['properties'] %}
+    {%- set i = loop.index -%}
+    {%- do protocols['properties'].update({property['name']: []}) -%}
+    {%- for item in td['properties'][property['name']]['forms'] if 'href' in item -%}
+        {%- if item['href'] == 'ws' -%}
+        {%- do item.update(href='" + urlSocket + "/properties/" + property' + (i -1) | string + '_name + "' ) -%}
+        {%- do global.update({'isWS':True}) -%}
+        {%- do protocols['properties'][property['name']].append('ws') -%}
+        {%- elif item['href'] == 'http' -%}
+        {%- do item.update(href='" + urlServer + "/properties/" + property' + (i -1) | string + '_name + "' ) -%}
+        {%- do global.update({'isHTTP':True}) -%}
+        {%- do protocols['properties'][property['name']].append('http') -%}
+        {%- elif item['href'] == 'coap' -%}
+        {%- do item.update(href='" + urlCoap + "/properties/" + property' + (i -1) | string + '_name + "' ) -%}
+        {%- do global.update({'isCOAP':True}) -%}
+        {%- do protocols['properties'][property['name']].append('coap') -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfor %}
+{#- EndPoint Actions #}    
+{%- for action in template['actions'] %}
+    {%- set i = loop.index -%}
+    {%- do protocols['actions'].update({action['name']: []}) -%}
+    {%- for item in td['actions'][action['name']]['forms'] if 'href' in item -%}
+        {%- if item['href'] == 'ws' -%}
+        {%- do global.update({'isWS':True}) -%}
+        {%- do item.update(href='" + urlSocket + "/actions/" + action' + i | string + '_name + "' ) -%}
+        {%- do protocols['actions'][action['name']].append('ws') -%}
+        {%- elif item['href'] == 'http' -%}
+        {%- do item.update(href='" + urlServer + "/actions/" + action' + i | string + '_name + "' ) -%}
+        {%- do global.update({'isHTTP':True}) -%}
+        {%- do protocols['actions'][action['name']].append('http') -%}
+        {%- elif item['href'] == 'coap' -%}
+        {%- do item.update(href='" + urlCoap + "/actions/" + action' + i | string + '_name + "' ) -%}
+        {%- do global.update({'isCOAP':True}) -%}
+        {%- do protocols['actions'][action['name']].append('coap') -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfor %}     
+{#- EndPoint Events #}    
+{%- for event in template['events'] %}
+    {%- set i = loop.index -%}
+    {%- do protocols['events'].update({event['name']: []}) -%}
+    {%- for item in td['events'][event['name']]['forms'] if 'href' in item -%}
+        {% if item['href'] == 'ws' %}
+        {%- do item.update(href='" + urlSocket + "/events/" + event' + i | string + '_name + "' ) -%}
+        {%- do global.update({'isWS':True}) -%}
+        {%- do protocols['events'][event['name']].append('ws') -%}
+        {% elif item['href'] == 'http' %}
+        {%- do item.update(href='" + urlServer + "/events/" + event' + i | string + '_name + "' ) -%}
+        {%- do global.update({'isHTTP':True}) -%}
+        {%- do protocols['events'][event['name']].append('http') -%}
+        {% elif item['href'] == 'coap' %}
+        {%- do item.update(href='" + urlCoap + "/events/" + event' + i | string + '_name + "' ) -%}
+        {%- do global.update({'isCOAP':True}) -%}
+        {%- do protocols['events'][event['name']].append('coap') -%}
+        {% endif %}
+    {%- endfor -%}
+{%- endfor %}   
+{%- endmacro %}
+{%- macro updateGlobal() -%}
+{%- do global.update({'isPropertyString':False}) -%}
+{%- do global.update({'isPropertyBoolean':False}) -%}
+{%- do global.update({'isPropertyInteger':False}) -%}
+{%- do global.update({'isPropertyNumber':False}) -%}
+{%- do global.update({'isPropertyArray':False}) -%}
+{%- do global.update({'isString':False}) -%}
+{%- do global.update({'isBoolean':False}) -%}
+{%- do global.update({'isInteger':False}) -%}
+{%- do global.update({'isNumber':False}) -%}
+{%- do global.update({'isMin':False}) -%}
+{%- do global.update({'isMax':False}) -%}
+{%- do global.update({'isArray':False}) -%}
+{%- do global.update({'isMinItems':False}) -%}
+{%- do global.update({'isMaxItems':False}) -%}
+{%- do global.update({'isArrayObject':False}) -%}
+{%- do global.update({'isArrayString':False}) -%}
+{%- do global.update({'isArrayBoolean':False}) -%}
+{%- do global.update({'isArrayInteger': False}) -%}
+{%- do global.update({'isArrayNumber': False}) -%}
+{%- do global.update({'isArrayMin':False}) -%}
+{%- do global.update({'isArrayMax':False}) -%}
+{%- do global.update({'isObject':False}) -%}
+{%- do global.update({'isProperty':False}) -%}
+{%- do global.update({'isRequired':False}) -%}
+{%- do global.update({'isSubscription':False}) -%}
+{%- do global.update({'isData':False}) -%}
+{%- do global.update({'isCancellation':False}) -%}
+{%- do global.update({'isWS':False}) -%}
+{%- do global.update({'isLP':False}) -%}
+{%- for property in template['properties'] -%}
+{%- if property['type'] == 'object' -%}
+{%- if 'properties' in property -%}
+{%- for p in property['properties'] -%}
+{%- if (p['type'] == 'string' or p['type'] == 'null') and (not(global['isPropertyString'])) -%}
+{%- do global.update({'isPropertyString':True}) -%}
+{%- elif p['type'] == 'boolean' and not(global['isPropertyBoolean']) -%}
+{%- do global.update({'isPropertyBoolean':True}) -%}
+{% elif p['type'] == 'integer' and not(global['isPropertyInteger']) -%}
+{%- do global.update({'isPropertyInteger':True}) -%}
+{% elif p['type'] == 'number' and not(global['isPropertynumber']) -%}
+{%- do global.update({'isPropertyNumber':True}) -%}
+{%- elif p['type'] == 'array' and not(global['isPropertyArray']) -%}
+{%- do global.update({'isPropertyArray':True}) -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for action in template['actions'] -%}
+{%- for item in action['input'] -%}
+{%- if (item['type'] == 'string' or item['type'] == 'null') and (not(global['isString'])) -%}
+{%- do global.update({'isString':True}) -%}
+{%- elif item['type'] == 'boolean' and not(global['isBoolean']) -%}
+{%- do global.update({'isBoolean':True}) -%}
+{%- elif item['type'] == 'integer' or item['type'] == 'number' -%}
+{%- if item['type'] == 'integer' and not(global['isInteger']) -%}
+{%- do global.update({'isInteger':True}) -%}
+{%- elif item['type'] == 'number' and not(global['isNumber']) -%}
+{%- do global.update({'isNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in item and not(global['isMin']) -%}
+{%- do global.update({'isMin':True}) -%}
+{% endif -%}
+{%- if 'maximum' in item and not(global['isMax']) -%}
+{%- do global.update({'isMax':True}) -%}
+{%- endif -%}
+{%- elif item['type'] == 'array' -%}
+{%- if not(global['isArray']) -%}
+{%- do global.update({'isArray':True}) -%}
+{%- endif -%}
+{%- if 'minItems' in item and not(global['isMinItems']) -%}
+{%- do global.update({'isMinItems':True}) -%}
+{%- endif -%}
+{%- if 'maxItems' in item and not(global['isMaxItems']) -%}
+{%- do global.update({'isMaxItems':True}) -%}
+{%- endif -%}
+{%- if item['items']['type'] == 'object' and not(global['isArrayObject']) -%}
+{%- do global.update({'isArrayObject':True}) -%}
+{%- elif (item['items']['type'] == 'string' or item['items']['type'] == 'null') and (not(global['isArrayString'])) -%}
+{%- do global.update({'isArrayString':True}) -%}
+{%- elif item['items']['type'] == 'boolean' and not(global['isArrayBoolean']) -%}
+{%- do global.update({'isArrayBoolean':True}) -%}
+{%- elif item['items']['type'] == 'integer' or item['items']['type'] == 'number' -%}
+{%- if item['items']['type'] == 'integer' and not(global['isArrayInteger']) -%}
+{%- do global.update({'isArrayInteger':True}) -%}
+{%- elif item['items']['type'] == 'number' and not(global['isArrayNumber']) -%}
+{%- do global.update({'isArrayNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in item['items'] and not(global['isArrayMin']) -%}
+{%- do global.update({'isArrayMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in item['items'] and not(global['isArrayMax']) -%}
+{%- do global.update({'isArrayMax':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- elif item['type'] == 'object' -%}
+{%- if not(global['isObject']) -%}
+{%- do global.update({'isObject':True}) -%}
+{%- endif -%}
+{%- if 'properties' in item -%}
+{%- if not(global['isProperty']) -%}
+{%- do global.update({'isProperty':True}) -%}
+{%- endif -%}
+{%- for p in item['properties'] -%}
+{%- if (p['type'] == 'string' or p['type'] == 'null') and (not(global['isString'])) -%}
+{%- do global.update({'isString':True}) -%}
+{%- elif p['type'] == 'boolean' and not(global['isBoolean']) -%}
+{%- do global.update({'isBoolean':True}) -%}
+{%- elif p['type'] == 'integer' or p['type'] == 'number' -%}
+{%- if p['type'] == 'integer' and not(global['isInteger']) -%}
+{%- do global.update({'isInteger':True}) -%}
+{%- elif p['type'] == 'number' and not(global['isNumber']) -%}
+{%- do global.update({'isNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in p and not(global['isMin']) -%}
+{%- do global.update({'isMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in p and not(global['isMax']) -%}
+{%- do global.update({'isMax':True}) -%}
+{%- endif -%}
+{%- elif p['type'] == 'array' -%}
+{%- do global.update({'isArray':True}) -%}
+{%- if 'minItems' in p['items'] and not(global['isMinItems']) -%}
+{%- do global.update({'isMinItems':True}) -%}
+{%- endif -%}
+{%- if 'maxItems' in p['items'] and not(global['isMaxItems']) -%}
+{%- do global.update({'isMaxItems':True}) -%}
+{%- endif -%}
+{%- if (p['items']['type'] == 'string' or p['items']['type'] == 'null') and (not(global['isArrayString'])) -%}
+{%- do global.update({'isArrayString':True}) -%}
+{%- elif p['items']['type'] == 'boolean' and not(global['isArrayBoolean']) -%}
+{%- do global.update({'isArrayBoolean':True}) -%}
+{%- elif p['items']['type'] == 'integer' or p['items']['type'] == 'number' -%}
+{%- if p['items']['type'] == 'integer' and not(global['isArrayInteger']) -%}
+{%- do global.update({'isArrayInteger':True}) -%}
+{%- elif p['items']['type'] == 'number' and not(global['isArrayNumber']) -%}
+{%- do global.update({'isArrayNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in p['items'] and not(global['isArrayMin']) -%}
+{%- do global.update({'isArrayMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in p['items'] and not(global['isArrayMax']) -%}
+{%- do global.update({'isArrayMax':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if 'required' in item and not(global['isRequired']) -%}
+{%- do global.update({'isRequired':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- for event in template['events'] -%}
+{%- set dataType = ['subscription', 'data', 'cancellation'] -%}
+{%- for data in dataType -%}
+{%- if data in event -%}
+{% if data == dataType[0] and not(global['isSubscription']) %}
+{%- do global.update({'isSubscription':True}) -%}
+{% elif data == dataType[1] and not(global['isData']) %}
+{%- do global.update({'isData':True}) -%}
+{% elif data == dataType[2] and not(global['isCancellation']) %}
+{%- do global.update({'isCancellation':True}) -%}
+{%- endif -%}
+{#
+{%- for item in event[data] -%}
+{%- if (item['type'] == 'string' or item['type'] == 'null') and not(global['isString']) -%}
+{%- do global.update({'isString':True}) -%}
+{%- elif item['type'] == 'boolean' and not(global['isBoolean']) -%}
+{%- do global.update({'isBoolean':True}) -%}
+{%- elif item['type'] == 'integer' or item['type'] == 'number' -%}
+{%- if item['type'] == 'integer' and not(global['isInteger']) -%}
+{%- do global.update({'isInteger':True}) -%}
+{%- elif item['type'] == 'number' and not(global['isNumber']) -%}
+{%- do global.update({'isNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in item and not(global['isMin']) -%}
+{%- do global.update({'isMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in item and not(global['isMax']) -%}
+{%- do global.update({'isMax':True}) -%}
+{%- endif -%}
+{%- elif item['type'] == 'array' -%}
+{%- if not(global['isArray']) -%}
+{%- do global.update({'isString':Array}) -%}
+{%- endif -%}
+{%- if 'minItems' in item and not(global['isMinItems']) -%}
+{%- do global.update({'isMinItems':True}) -%}
+{%- endif -%}
+{%- if 'maxItems' in item and not(global['isMaxItems']) -%}
+{%- do global.update({'isMaxItems':True}) -%}
+{%- endif -%}
+{%- if item['items']['type'] == 'object' and not(global['isArrayObject']) -%}
+{%- do global.update({'isArrayObject':True}) -%}
+{%- elif (item['items']['type'] == 'string' or item['items']['type'] == 'null') and (not(global['isArrayString'])) -%}
+{%- do global.update({'isArrayString':True}) -%}
+{%- elif item['items']['type'] == 'boolean' and not(global['isArrayBoolean']) -%}
+{%- do global.update({'isArrayBoolean':True}) -%}
+{%- elif item['items']['type'] == 'integer' or item['items']['type'] == 'number' -%}
+{%- if item['items']['type'] == 'integer' and not(global['isArrayInteger']) -%}
+{%- do global.update({'isArrayInteger':True}) -%}
+{%- elif item['items']['type'] == 'number' and not(global['isArrayNumber']) -%}
+{%- do global.update({'isArrayNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in item['items'] and not(global['isArrayMin']) -%}
+{%- do global.update({'isArrayMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in item['items'] and not(global['isArrayMax']) -%}
+{%- do global.update({'isArrayMax':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- elif item['type'] == 'object' -%}
+{%- if not(global['isObject']) -%}
+{%- do global.update({'isObject':True}) -%}
+{%- endif -%}
+{%- if 'properties' in item -%}
+{%- if not(global['isProperty']) -%}
+{%- do global.update({'isProperty':True}) -%}
+{%- endif -%}
+{%- for p in item['properties'] -%}
+{%- if (p['type'] == 'string' or p['type'] == 'null') and (not(global['isString'])) -%}
+{%- do global.update({'isString':True}) -%}
+{%- elif p['type'] == 'boolean' and not(global['isBoolean']) -%}
+{%- do global.update({'isBoolean':True}) -%}
+{%- elif p['type'] == 'integer' or p['type'] == 'number' -%}
+{%- if p['type'] == 'integer' and not(global['isInteger']) -%}
+{%- do global.update({'isInteger':True}) -%}
+{%- elif p['type'] == 'number' and not(global['isNumber']) -%}
+{%- do global.update({'isNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in p and not(global['isMin']) -%}
+{%- do global.update({'isMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in p and not(global['isMax']) -%}
+{%- do global.update({'isMax':True}) -%}
+{%- endif -%}
+{%- elif p['type'] == 'array' -%}
+{%- do global.update({'isArray':True}) -%}
+{%- if 'minItems' in p['items'] and not(global['isMinItems']) -%}
+{%- do global.update({'isMinItems':True}) -%}
+{%- endif -%}
+{%- if 'maxItems' in p['items'] and not(global['isMaxItems']) -%}
+{%- do global.update({'isMaxItems':True}) -%}
+{%- endif -%}
+{%- if (p['items']['type'] == 'string' or p['items']['type'] == 'null') and (not(global['isArrayString'])) -%}
+{%- do global.update({'isArrayString':True}) -%}
+{%- elif p['items']['type'] == 'boolean' and not(global['isArrayBoolean']) -%}
+{%- do global.update({'isArrayBoolean':True}) -%}
+{%- elif p['items']['type'] == 'integer' or p['items']['type'] == 'number' -%}
+{%- if p['items']['type'] == 'integer' and not(global['isArrayInteger']) -%}
+{%- do global.update({'isArrayInteger':True}) -%}
+{%- elif p['items']['type'] == 'number' and not(global['isArrayNumber']) -%}
+{%- do global.update({'isArrayNumber':True}) -%}
+{%- endif -%}
+{%- if 'minimum' in p['items'] and not(global['isArrayMin']) -%}
+{%- do global.update({'isArrayMin':True}) -%}
+{%- endif -%}
+{%- if 'maximum' in p['items'] and not(global['isArrayMax']) -%}
+{%- do global.update({'isArrayMax':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- if 'required' in item and not(global['isRequired']) -%}
+{%- do global.update({'isRequired':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+#}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+
+{%- if td['forms'] | length == 2 -%}
+{%- do global.update({'isWS':True}) -%}
+{%- endif -%}
+{# Now adding longpoll check #}
+
+{%- if td['events'] | length == 3 -%}
+{%- do global.update({'isLP':True}) -%}
+{%- endif -%}
+
+{%- for property in template['properties'] -%}
+{%- if td['properties'][property['name']]['forms'] | length == 2 -%}
+{%- if not(global['isWS']) -%}
+{%- do global.update({'isWS':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for action in template['action'] -%}
+{%- if td['actions'][action['name']]['forms'] | length == 2 -%}
+{%- if not(global['isWS']) -%}
+{%- do global.update({'isWS':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- for event in template['events'] -%}
+{%- if td['events'][event['name']]['forms'] | length == 2 -%}
+{%- if not(global['isWS']) -%}
+{%- do global.update({'isWS':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- if td['events'][event['name']]['forms'] | length == 3 -%}
+{%- if not(global['isLP']) -%}
+{%- do global.update({'isLP':True}) -%}
+{%- endif -%}
+{%- endif -%}
+{%- endfor -%}
+{%- endmacro -%}
+{% macro defineVariable(typeV, name, value) -%}
+{%- if value is iterable and value is not string %}
+{{ typeV }} {{ name }} = 
+    {%- for elem in value -%}
+        {%- if loop.last -%} 
+            {{ ' ' + elem }};
+        {%- else -%}
+            {{ ' ' + elem }}
+        {%- endif -%}
+    {%- endfor -%}    
+{%- elif typeV == 'const char*' or typeV == 'char*' %}
+{%- if value == 'iv' -%}
+{{ typeV }} {{ name }} = "";
+{%- else -%}
+{{ typeV }} {{ name }} = "{{ value }}";
+{%- endif -%}
+{%- elif typeV == 'const char' or typeV == 'char' -%}
+{%- if value == 'iv' -%}
+{{ typeV }} {{ name }};
+{%- else -%}
+{{ typeV }} {{ name }} = '{{ value }}';
+{%- endif -%}
+{%- elif typeV.lower() == 'string' or typeV == 'null' %}
+{%- if value == 'iv' -%}
+{{ castType(typeV) }} {{ name }} = "";
+{%- else -%}
+{{ castType(typeV) }} {{ name }} = "{{ value }}";
+{%- endif -%}
+{%- elif typeV == 'string_nq' -%}
+String {{ name }} = {{ value }};
+{%- elif typeV == 'char_nq' -%}
+const char* {{ name }} = {{ value }};
+{%- elif typeV == 'integer' %}
+{%- if value == '' -%}
+int {{ name }};
+{%- elif value == 'iv' -%}
+int {{ name }} = 0;    
+{%- else -%}    
+int {{ name }} = {{ value }};
+{%- endif -%}
+{%- elif typeV == 'number' %}
+{%- if value == '' -%}
+double {{ name }};
+{%- elif value == 'iv' -%}
+double {{ name }} = 0.0;
+{%- else -%}
+{%- set vs = value | string -%}  
+{%- if '.' in vs -%}  
+double {{ name }} = {{ value }};
+{%- else -%}
+double {{ name }} = {{ value }}.0;
+{%- endif -%}
+{%- endif -%}
+{% elif typeV == 'boolean' %}
+{%- if value == '' -%}
+bool {{ name }};
+{%- elif value == 'iv' -%}
+bool {{ name }} = false;    
+{%- else -%}    
+bool {{ name }} = {{ value }};
+{%- endif -%}
+{% elif typeV == 'array' or typeV == 'JsonArray' %}
+{%- if value == 'iv' -%}
+JsonArray {{ name }};
+{%- else -%}
+JsonArray {{ name }} = {{ value }};
+{%- endif -%}
+{% elif typeV == 'object' or typeV == 'JsonObject' %}
+{%- if value == 'iv' -%}
+JsonObject {{ name }};
+{%- else -%}
+JsonObject {{ name }} = {{ value }};
+{%- endif -%}
+{% else %}
+{%- if value == 'iv' -%}
+{{ typeV }} {{ name }};
+{%- else -%}
+{{ typeV }} {{ name }} = {{ value }};     
+{%- endif -%}
+{%- endif %}    
+{%- endmacro %}
+{% macro setVariable(ifString, name, value='') -%}
+{%- if ifString -%}
+{{ name }} = "{{ value }}";
+{%- elif value == '' -%}
+{{ name }};
+{%- else -%}
+{{ name }} = {{ value }};
+{%- endif -%}
+{%- endmacro %}
+{% macro defineFunction(name, input, output, body, source, cast) -%}
+{%- if 'type' in output -%}
+{%- if cast -%}
+{{ castType(output['type']) }}
+{%- else -%}
+{{ output['type'] }}
+{%- endif -%}
+{%- else -%}      
+void       
+{%- endif -%}        
+{{ ' ' + name }}(
+    {%- for item in input -%}
+        {%- if cast -%}
+        {{ castType(item['type']) }}
+        {%- else -%}
+        {{ item['type'] }}
+        {%- endif -%}
+        {%- if loop.last -%}      
+        {{ ' ' + item['name'] }}
+        {%- else -%} 
+        {{ ' ' + item['name'] }},
+        {%- endif -%}
+    {%- endfor -%}
+) {
+    {% if source == 'cli' %}
+{{ '\t' + body | replace('{', '\n\t{\n\t') | replace('}', '}\n\t') | replace(';', ';\n\t') }}
+}
+    {% else %}
+{{ body }}
+    {% endif %}
+{%- endmacro %}
+{% macro castType(type) -%}
+{%- if type == 'integer' -%}
+int
+{%- elif type == 'number' -%}
+double
+{%- elif type.lower() == 'string' or type == 'null' -%}
+String
+{%- elif type == 'boolean' -%}
+bool
+{%- elif type == 'array' -%}
+JsonArray
+{%- elif type == 'object' -%}
+JsonObject 
+{%- endif -%}
+{%- endmacro %}
+{% macro handleInputType(interaction, interactionName, array=False) -%}
+{% if interaction['type'] == 'array' %}
+DynamicJsonDocument {{ interactionName + '_jdoc' }}(300);
+{# { defineVariable('JsonArray', interactionName + '_value', 'iv') } #}
+JsonArray {{ interactionName + '_value' }} = {{ interactionName + '_jdoc' }}.to<JsonArray>();
+{% if 'minItems' in property %}
+{{ defineVariable('int', interactionName + '_minItems', interaction['minItems']) }}
+{% endif %}
+{% if 'maxItems' in interaction %}
+{{ defineVariable('int', interactionName + '_minItems', interaction['maxItems']) }}
+{%- endif %}
+{# { handleInputType(interaction['items'], interactionName, True) } #}
+{% elif interaction['type'] == 'object' %}
+{{ defineVariable('JsonObject', interactionName + '_value', 'iv') }}
+{% if 'properties' in interaction %}
+{{ defineVariable('String', interactionName + '_schema', interaction['properties'] | replace("'", '\\"') | replace(': ', ':') | replace(', ', ',')) }}
+{%- endif %}
+{% if 'required' in interaction %}
+String {{ interactionName }}_opRequired[{{ interaction['required'] | length }}] = {
+    {%- for p in interaction['required'] -%}
+    {%- if loop.last -%}
+    "{{ p }}"
+    {%- else -%}
+    "{{ p }}",
+    {%- endif -%}
+    {%- endfor -%}
+};
+{%- endif -%}
+{% elif interaction['type'] == 'integer' or interaction['type'] == 'number' %}
+{{ defineVariable(interaction['type'], interactionName + '_value', 'iv') }}
+{% if array %}
+{% if 'minimum' in interaction %}
+{{ defineVariable(interaction['type'], interactionName + '_itemsMinimum', interaction['minimum']) }}
+{% endif %}
+{% if 'maximum' in interaction %}
+{{ defineVariable(interaction['type'], interactionName + '_itemsMaximum', interaction['maximum']) }}
+{% endif %}
+{% else %}
+{% if 'minimum' in interaction %}
+{{ defineVariable(interaction['type'], interactionName + '_minimum', interaction['minimum']) }}
+{% endif %}
+{% if 'maximum' in interaction %}
+{{ defineVariable(interaction['type'], interactionName + '_maximum', interaction['maximum']) }}
+{%- endif %}
+{% endif %}
+{% else %}
+{{ defineVariable(interaction['type'], interactionName + '_value', 'iv') }}
+{% endif %}
+{% endmacro -%}
+{%- set global = {} -%}
+{%- set protocols = {} -%}
+{%- do protocols.update({'td' : [] }) -%}
+{%- do protocols.update({'properties' : {} }) -%}
+{%- do protocols.update({'events' : {} }) -%}
+{%- do protocols.update({'actions' : {} }) -%}
+{{ updateTD() }}
+{{ updateGlobal() }}
+{%- set ssid = template['ssid'] -%}
+{%- set password = template['password'] -%}
+{%- set protocolServer = 'http' -%}
+{%- set protocolSocket = 'ws' -%}
+{%- set protocolCoap = 'coap' -%}
+{%- set portServer = template['portserver'] -%}
+{%- set portSocket = template['portsocket'] -%}
+{%- set portCoap = template['portcoap'] -%}
+{%- set ipServer = '192.168.1.5' -%}
+{%- set thingName = td['title'].lower() %}
+{%- set urlServer = protocolServer + "://" + ipServer + ":" + portServer + "/" + thingName -%}
+{%- set thingD = td | replace("'", '\\"') | replace('True', 'true') | replace('False', 'false') | replace(': ', ':') | replace(', ', ',') | replace(' + ', '+') -%}
+{%- set req = [] -%}
+{%- set dataType = ['subscription', 'data', 'cancellation'] -%}
+{%- set capacity = {} -%}
+{%- do capacity.update({'maxSchema':20}) -%}
+{%- do capacity.update({'maxInputSchema':0}) -%}
+#include <ArduinoJson.h>
+#include "Arduino.h"
+#include <WiFi.h>
+{% if global['isHTTP'] %}
+#include <embeddedWoT_HTTP_LongPoll.h>
+{% endif %}
+{% if global['isWS'] %}
+#include <embeddedWoT_WebSocket.h>
+{% endif %}
+{% if global['isCOAP'] %}
+#include <embeddedWoT_CoAP.h>
+{% endif %}
+{% if template['libraries'] | length > 0 %}
+{% for lib in template['libraries'] %}
+#include <{{ lib }}>
+{% endfor %}
+{% endif %}
+
+{% for const in template['constants'] %}
+#define {{ const['name'] }} {{ const['value'] }}
+{% if loop.last %}
+
+{% endif %}
+{% endfor %}
+{{ defineVariable('const char*', 'ssid', ssid) }}
+{{ defineVariable('const char*', 'password', password) }}
+{% if global['isHTTP'] %}
+{{ defineVariable('String', 'protocolServer', protocolServer) }}
+{{ defineVariable('int', 'portServer', portServer) }}
+{{ defineVariable('String', 'urlServer', '') }}
+{% endif %}
+{% if global['isWS'] %}
+{{ defineVariable('String', 'protocolSocket', protocolSocket) }}
+{{ defineVariable('int', 'portSocket', portSocket) }}
+{{ defineVariable('String', 'urlSocket', '') }}
+{% endif %}
+{% if global['isCOAP'] %}
+{{ defineVariable('String', 'protocolCoap', protocolCoap) }}
+{{ defineVariable('int', 'portCoap', portCoap) }}
+{{ defineVariable('String', 'urlCoap', '') }}
+{% endif %}
+
+{{ defineVariable('String', 'thingName', thingName) }}
+{{ defineVariable('String', 'td', '') }}
+
+{% if template['numop'] > 0 %}
+DynamicJsonDocument p_doc(
+    {%- do capacity.update({'properties':0}) -%}
+    {%- if global['isPropertyArray'] -%}
+    {%- do capacity.update({'properties': 2000}) -%}
+    {%- endif -%}
+    {%- for property in template['properties'] -%}
+    {%- if property['type'] == 'object' -%}
+    {%- if 'properties' in property -%}
+    {%- do capacity.update({'properties': capacity['properties'] + property['properties'] | length * 200}) -%}
+    {%- else -%}
+    {%- do capacity.update({'properties': capacity['properties'] + 500}) -%}
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    {{ capacity['properties'] }});
+{% endif %}
+{% if global['isWS'] %}
+
+    {%- do capacity.update({'actions':0}) -%}
+    {%- for action in template['actions'] -%}
+    {%- if td['actions'][action['name']]['forms'] | length == 2 -%}
+    {%- do capacity.update({'actions' : capacity['actions'] + 1}) -%}
+    {%- endif -%}
+    {%- endfor -%}
+    
+{% endif %}
+{# {% if template['numevents'] > 0 %} #}
+
+{% if global['isSubscription'] or global['isData'] or global['isCancellation'] -%}
+// document to handle Events Schemas in WebSocket
+DynamicJsonDocument es_doc(
+    {%- do capacity.update({'events':0}) -%}
+    {%- for event in template['events'] -%}
+    {%- for data in dataType -%}
+    {%- if data in event -%}
+    {%- do capacity.update({'events': capacity['events'] + event[data] | string | length}) -%}
+    {%- if event[data] | string | length > capacity['maxSchema'] -%}
+    {%- do capacity.update({'maxSchema': event[data] | string | length}) -%}
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+    {%- endfor -%}
+    {{ capacity['events'] * 2 }});
+{% else %}
+DynamicJsonDocument es_doc(20);
+{% endif %}
+// Json Array to store the ip addresses of clients connected to WebSocket channel for Events requests   
+JsonArray ipe_arr;
+{# {% endif %} #}
+DeserializationError err;
+
+{{ defineVariable('int', 'properties_number', template['numproperties']) }}
+{{ defineVariable('int', 'objectProperties_number', template['numop']) }}
+{{ defineVariable('int', 'actions_number', template['numactions']) }}
+{{ defineVariable('int', 'events_number', template['numevents']) }}
+
+{% if template['numproperties'] > 0 %}
+// Properties
+{% for property in template['properties'] %}
+{{ defineVariable('const char*', 'property' + (loop.index -1) | string + '_name', property['name']) }}
+{{ handleInputType(property, 'property' + (loop.index -1) | string) }}
+{% endfor %}
+{% endif %}
+{% if template['numactions'] > 0 %}
+// Actions
+{% for action in template['actions'] %}
+{% set actionIndex = 'action' + loop.index | string -%}
+{{ defineVariable('const char*', actionIndex + '_name', action['name']) }}
+{{ defineVariable('int', actionIndex + '_inputsNumber', action['input'] | length) }}
+String {{ actionIndex + '_schema' }}[{{ action['input'] | length }}] = {
+    {%- for item in action['input'] -%}
+    {%- if loop.last -%}
+    "{{ item | replace("'", '\\"') | replace(': ', ':') | replace(', ', ',') }}"
+    {%- else -%}
+    "{{ item | replace("'", '\\"') | replace(': ', ':') | replace(', ', ',') }}",
+    {%- endif -%}
+    {%- endfor -%}
+};
+{% if action['input'] | length > 0 %}
+{% if action['input'] | string | length > capacity['maxInputSchema'] %}
+{% do capacity.update({'maxInputSchema': action['input'] | string | length }) %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if template['numevents'] > 0 %}
+// Events
+{% for event in template['events'] %}
+{% set eventIndex = 'event' + loop.index | string -%}
+{{ defineVariable('const char*', eventIndex + '_name', event['name']) }}
+{% for data in dataType %}
+{% if data in event %}
+String {{ eventIndex + '_' + data + 'Schema' }}[{{ event[data] | length }}] = {
+    {%- for item in event[data] -%}
+    {%- if loop.last -%}
+    "{{ item | replace("'", '\\"') | replace(': ', ':') | replace(', ', ',') }}"
+    {%- else -%}
+    "{{ item | replace("'", '\\"') | replace(': ', ':') | replace(', ', ',') }}",
+    {%- endif -%}
+    {%- endfor -%}
+};
+{% endif %}
+{% endfor %}
+{% endfor %}
+bool events_subscriptionSchema[{{ template['numevents'] }}] = {
+    {%- for event in template['events'] -%}
+    {% if dataType[0] in event %}
+    {%- if loop.last -%}
+    true
+    {%- else -%}
+    true, 
+    {%- endif -%}
+    {%- else -%}
+    {%- if loop.last -%}
+    false
+    {%- else -%}
+    false, 
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+};
+bool events_dataSchema[{{ template['numevents'] }}] = {
+    {%- for event in template['events'] -%}
+    {% if dataType[1] in event %}
+    {%- if loop.last -%}
+    true
+    {%- else -%}
+    true, 
+    {%- endif -%}
+    {%- else -%}
+    {%- if loop.last -%}
+    false
+    {%- else -%}
+    false, 
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+};
+bool events_cancellationSchema[{{ template['numevents'] }}] = {
+    {%- for event in template['events'] -%}
+    {% if dataType[2] in event %}
+    {%- if loop.last -%}
+    true
+    {%- else -%}
+    true, 
+    {%- endif -%}
+    {%- else -%}
+    {%- if loop.last -%}
+    false
+    {%- else -%}
+    false, 
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+};
+{% endif %}
+
+// Endpoints
+{% set reqWS = [] %}
+{% set reqPropertyWS = [] %}
+{% if td['forms'] | length == 2 %}
+{% do reqWS.append(('thingName', 3)) %}
+{% do reqPropertyWS.append(('thingName', 3)) %}
+{% endif %}
+{% for property in template['properties'] %}
+{% if td['properties'][property['name']]['forms'] | length == 2 %}
+{% do reqWS.append(('property' + loop.index | string + '_name', loop.index+3)) %}
+{% do reqPropertyWS.append(('property' + loop.index | string + '_name', loop.index+3)) %}
+{% endif %}
+{% endfor %}
+{% for action in template['actions'] %}
+{% if td['actions'][action['name']]['forms'] | length == 2 %}
+{% do reqWS.append(('action' + loop.index | string + '_name', loop.index+3+template['numproperties'])) %}
+{% endif %}
+{% endfor %}
+{% for i in range(1, template['numevents']+1) %}
+{% set request = 'req' + (i + 3 + template['numproperties'] + template['numactions']) | string %}
+{{ defineVariable('String', request, ['"/"', '+', 'thingName', '+', '"/events/"', '+', 'event' + i | string + '_name']) }}
+{% endfor %}
+{% for i in range(1, template['numactions']+1) %}
+{% set request = 'req' + (i + 3 + template['numproperties']) | string %}
+{{ defineVariable('String', request, ['"/"', '+', 'thingName', '+', '"/actions/"', '+', 'action' + i | string + '_name']) }}
+{% endfor %}
+{% for i in range(1, template['numproperties']+1) %}
+{% set request = 'req' + (i + 3) | string %}
+{{ defineVariable('String', request, ['"/"', '+', 'thingName', '+', '"/properties/"', '+', 'property' + (i -1) | string + '_name']) }}
+{% endfor %}
+{{ defineVariable('String', 'req3', ['"/"', '+', 'thingName', '+', '"/all/properties"' ]) }}
+{{ defineVariable('String', 'req2', ['"/"', '+', 'thingName']) }}
+{{ defineVariable('String', 'req1', '/') }}
+
+IPAddress ipS;
+{% if global['isHTTP'] %}
+//Longpoll object handler
+embeddedWoT_HTTP_LongPoll *hlp;
+{% endif %}
+{% if global['isWS'] %}
+//WebSocket object handler
+embeddedWoT_WebSocket *wsb;
+{% endif %}
+{% if global['isCOAP'] %}
+//CoAP object handler
+embeddedWoT_CoAP *coap;
+{% endif %}
+
+{% for var in template['globals'] %}
+{% set i = loop.index %}
+{% if not(var['isArray']) %}
+{% if 'value' in var and var['value'] != '' %}
+{{ defineVariable(var['type'], var['name'], var['value']) }}
+{% else %}
+{{ defineVariable(var['type'], var['name'], 'iv') }}
+{% endif %}
+{% else %}
+{% if var['items'] | length > 0 %}
+{{ var['type'] }} {{ var['name'] }}[{{ var['itemsNumber'] }}] = {
+    {%- for item in var['items'] -%}
+    {%- if loop.last -%}
+    {%- if var['type'] == 'String' or var['type'] == 'char*' or var['type'] == 'const char*' -%}
+    "{{ item }}"
+    {%- elif var['type'] == 'char' -%}
+    '{{ item }}'
+    {%- else -%}
+    {{ item }}
+    {%- endif -%}
+    {%- else -%}
+    {%- if var['type'] == 'String' or var['type'] == 'char*' or var['type'] == 'const char*' -%}
+    "{{ item }}",
+    {%- elif var['type'] == 'char' -%}
+    '{{ item }}',
+    {%- else -%}
+    {{ item }},
+    {%- endif -%}
+    {%- endif -%}
+    {%- endfor -%}
+};
+{% else %}
+{{ var['type'] }} {{ var['name'] }}[{{ var['itemsNumber'] }}] = {};
+{% endif %}
+{% endif %}
+{% endfor %}
+int i, j, k, n;
+
+String request1();
+String request2();
+String request3();
+{% for i in range(1, template['numproperties'] +1) %}
+String request{{i + 3}}();
+{% endfor %}
+{% for i in range(1, template['numactions'] +1) %}
+String request{{i + 3 + template['numproperties']}}(String body);
+{% endfor %}
+
+{# Start defining endpoints and callbacks #}
+//HTTP - actions
+{% set req = [] %}
+{% set request = [] %}
+{% for action in protocols['actions'] if 'http' in protocols['actions'][action] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties']) | string) %}
+    {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int http_actions_num = {{ req|length }};
+const String http_actions_endpoint[http_actions_num] = { {{ req|join(', ') }} };
+actions_handler http_actions_callback[http_actions_num] = { {{ request|join(', ') }} };
+
+//WS - actions
+{% set req = [] %}
+{% set request = [] %}
+{% for action in protocols['actions'] if 'ws' in protocols['actions'][action] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties']) | string) %}
+        {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int ws_actions_num = {{ req|length }};
+const String ws_actions_endpoint[ws_actions_num] = { {{ req|join(', ') }} };
+actions_handler ws_actions_callback[ws_actions_num] = { {{ request|join(', ') }} };
+
+//CoAP - actions
+{% set req = [] %}
+{% set request = [] %}
+{% for action in protocols['actions'] if 'coap' in protocols['actions'][action] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties']) | string) %}
+        {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int coap_actions_num = {{ req|length }};
+const String coap_actions_endpoint[coap_actions_num] = { {{ req|join(', ') }} };
+actions_handler coap_actions_callback[coap_actions_num] = { {{ request|join(', ') }} };
+
+//HTTP - Properties
+{% set req = [] %}
+{% set request = [] %}
+{% if 'http' in protocols['td'] %}
+{% set req = ['req1', 'req2', 'req3'] %}
+{% set request = ['request1', 'request2', 'request3'] %}
+{% endif %}
+{% for property in protocols['properties'] if 'http' in protocols['properties'][property] %}
+    {% do req.append('req' + (loop.index + 3) | string) %}
+    {% do request.append('request' + (loop.index + 3) | string) %}
+{% endfor %}
+const int http_properties_num = {{ req|length }};
+const String http_properties_endpoint[http_properties_num] = { {{ req|join(', ') }} };
+properties_handler http_properties_callback[http_properties_num] = { {{ request|join(', ') }} };
+
+//WS - Properties
+{% set req = [] %}
+{% set request = [] %}
+{% if 'ws' in protocols['td'] %}
+{% set req = ['req1', 'req2', 'req3'] %}
+{% set request = ['request1', 'request2', 'request3'] %}
+{% endif %}
+{% for property in protocols['properties'] if 'ws' in protocols['properties'][property] %}
+    {% do req.append('req' + (loop.index + 3) | string) %}
+    {% do request.append('request' + (loop.index + 3) | string) %}
+{% endfor %}
+const int ws_properties_num = {{ req|length }};
+const String ws_properties_endpoint[ws_properties_num] = { {{ req|join(', ') }} };
+properties_handler ws_properties_callback[ws_properties_num] = { {{ request|join(', ') }} };
+
+//CoAP - Properties
+{% set req = [] %}
+{% set request = [] %}
+{% if 'coap' in protocols['td'] %}
+{% set req = ['req1', 'req2', 'req3'] %}
+{% set request = ['request1', 'request2', 'request3'] %}
+{% endif %}
+{% for property in protocols['properties'] if 'coap' in protocols['properties'][property] %}
+    {% do req.append('req' + (loop.index + 3) | string) %}
+    {% do request.append('request' + (loop.index + 3) | string) %}
+{% endfor %}
+const int coap_properties_num = {{ req|length }};
+const String coap_properties_endpoint[coap_properties_num] = { {{ req|join(', ') }} };
+properties_handler coap_properties_callback[coap_properties_num] = { {{ request|join(', ') }} };
+
+//HTTP - events
+{% set req = [] %}
+{% set request = [] %}
+{% for event in protocols['events'] if 'http' in protocols['events'][event] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties'] + template['numactions']) | string) %}
+        {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int http_events_num = {{ req|length }};
+const String http_events_endpoint[http_events_num] = { {{ req|join(', ') }} };
+
+//WS - events
+{% set req = [] %}
+{% set request = [] %}
+{% for event in protocols['events'] if 'ws' in protocols['events'][event] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties'] + template['numactions']) | string) %}
+        {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int ws_events_num = {{ req|length }};
+const String ws_events_endpoint[ws_events_num] = { {{ req|join(', ') }} };
+
+//CoAP - events
+{% set req = [] %}
+{% set request = [] %}
+{% for event in protocols['events'] if 'coap' in protocols['events'][event] %}
+    {% do req.append('req' + (loop.index + 3 + template['numproperties'] + template['numactions']) | string) %}
+        {% do request.append('request' + (loop.index + 3 + template['numproperties']) | string) %}
+{% endfor %}
+const int coap_events_num = {{ req|length }};
+const String coap_events_endpoint[coap_events_num] = { {{ req|join(', ') }} };
+
+void setup() {
+    Serial.begin(115200);
+    Serial.println();
+    {% if template['numop'] > 0 %}
+
+    // properties data 
+    {% for property in template['properties'] %}
+    {% if property['type'] == 'object' %}
+    {% set capacity = 0 %}
+    {% if 'properties' in property %}
+    {% set capacity = property['properties'] | string | length %}
+    {% endif %}
+    DynamicJsonDocument op{{ loop.index }}_doc({{ capacity*2 }});
+    JsonArray arr{{ loop.index }};
+    {% endif %}
+    {% endfor %}
+    {% for property in template['properties'] %}
+    {% if property['type'] == 'object' %}
+
+    {{ setVariable(False, 'deserializeJson(op' + loop.index | string + '_doc, property' + loop.index | string + '_schema)') }}
+    {{ setVariable(False, 'arr' + loop.index | string, 'op' + loop.index | string + '_doc.as<JsonArray>()') }}
+    {{ setVariable(False, 'property' + loop.index | string + '_value', 'p_doc.createNestedObject()') }}
+    {% if 'properties' in property %}
+    for(i=0; i<arr{{ loop.index }}.size(); i++) {
+        {{ defineVariable('string_nq', 'op' + loop.index | string + '_name', 'arr' + loop.index | string + '[i]["name"]') }}
+        {{ defineVariable('string_nq', 'op' + loop.index | string + '_type', 'arr' + loop.index | string + '[i]["type"]') }}
+        {% if global['isPropertyString'] %}
+        if(op{{ loop.index }}_type.equals("string") || op{{ loop.index }}_type.equals("null"))
+            {{ setVariable(True, 'property' + loop.index | string + '_value[op' + loop.index | string + '_name]', '') }}
+        {% endif -%}
+        {% if global['isPropertyBoolean'] %}
+        {% if global['isPropertyString'] %}{{ '\t\t\t\telse if' }}{% else %}{{ '\t\t\t\tif' }}{% endif %}(op{{ loop.index }}_type.equals("boolean"))
+            {{ setVariable(False, 'property' + loop.index | string + '_value[op' + loop.index | string + '_name]', 'false') }}
+        {% endif -%}
+        {% if global['isPropertyInteger'] %}
+        {% if global['isPropertyString'] or global['isPropertyBooelan'] %}{{ '\t\t\t\telse if' }}{% else %}{{ '\t\t\t\tif' }}{% endif %}(op{{ loop.index }}_type.equals("integer") || op{{ loop.index }}_type.equals("number"))
+            {{ setVariable(False, 'property' + loop.index | string + '_value[op' + loop.index | string + '_name]', '0') }}
+        {% endif -%}   
+        {% if global['isPropertyArray'] %}
+        {% if global['isPropertyString'] or global['isPropertyBooelan'] or global['isPropertyInteger'] %}{{ '\t\t\t\telse if' }}{% else %}{{ '\t\t\t\tif' }}{% endif %}(op{{ loop.index }}_type.equals("array"))
+            {{ setVariable(False, 'property' + loop.index | string + '_value[op' + loop.index | string + '_name]', 'p_doc.createNestedArray()') }}
+        {% endif -%}   
+    {{ '\t\t}' }}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% if template['numevents'] > 0 %}
+
+    // events data
+    {# Il documento es_doc mi serve per parsare correttamente i messaggi nel canale websocket #}
+    {% if global['isSubscription'] or global['isData'] or global['isCancellation'] %}
+    {{ defineVariable('int', 'schema_size', '0') }}
+    JsonArray arr;
+    JsonObject obj;
+    {% for event in template['events'] %}
+    {% set e = loop.index %}
+    {% for data in dataType %}
+    {% if data in event %}
+
+    {% if e == 1 %}
+    {{ setVariable(False, 'schema_size', 'sizeof(event' + e | string + '_' + data + 'Schema) / sizeof(String)') }}
+    {% endif %}
+    if(es_doc[event{{ e }}_name].isNull())
+        {{ setVariable(False, 'arr', 'es_doc.createNestedObject(event' + e | string + '_name).createNestedArray("' + data + '")') }}
+    else
+        {{ setVariable(False, 'arr', 'es_doc[event' + e | string + '_name].createNestedArray("' + data + '")') }}
+    for(i=0; i<schema_size; i++) {
+        DynamicJsonDocument tmp_doc({{ capacity['maxSchema'] * 2 }});
+        {{ setVariable(False, 'deserializeJson(tmp_doc, event' + e | string + '_' + data + 'Schema[i])') }}
+        {{ defineVariable('JsonObject', 'obj', 'arr.createNestedObject()') }}
+        {{ setVariable(False, 'obj["name"]', 'tmp_doc["name"]') }}
+        {{ setVariable(False, 'obj["value"]', 'tmp_doc["value"]') }}
+    }
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+    {% endif %}
+  
+    connection(ssid, password);
+    
+    td = "{{ thingD }}";
+
+    {% if global['isHTTP'] %}
+    hlp = new embeddedWoT_HTTP_LongPoll(portServer);
+
+    hlp->exposeActions(http_actions_endpoint, http_actions_callback, http_actions_num);
+    hlp->exposeEvents(http_events_endpoint, http_events_num);
+    hlp->exposeProperties(http_properties_endpoint, http_properties_callback, http_properties_num);
+
+    hlp->begin();
+    {% endif %}
+    {% if global['isWS'] %}
+    wsb = new embeddedWoT_WebSocket(portSocket);
+
+    wsb->bindEventSchema(es_doc);
+    wsb->exposeActions(ws_actions_endpoint, ws_actions_callback, ws_actions_num);
+    wsb->exposeEvents(ws_events_endpoint, ws_events_num);
+    wsb->exposeProperties(ws_properties_endpoint, ws_properties_callback, ws_properties_num);
+    {% endif %}
+    {% if global['isCOAP'] %}
+    coap = new embeddedWoT_CoAP(portCoap);
+
+    coap->bindEventSchema(es_doc);
+    coap->exposeActions(coap_actions_endpoint, coap_actions_callback, coap_actions_num);
+    coap->exposeProperties(coap_properties_endpoint, coap_properties_callback, coap_properties_num);
+    coap->exposeEvents(coap_events_endpoint, coap_events_num);
+    coap->start();
+    {% endif %}
+    Serial.println("Server started");
+    {% if global['isHTTP'] %}
+    Serial.println(urlServer);
+    {% endif %}
+    {% if global['isWS'] %}
+    Serial.println(urlSocket);
+    {% endif %}
+    {% if global['isCOAP'] %}
+    Serial.println(urlCoap);
+    {% endif %}
+    {% if 'setup' in template %}
+
+    {{ template['setup'] }}
+    {% endif %}
+}    
+
+{% if 'code' in template %}
+{{ template['code'] }}
+{% endif %}
+
+void loop() {
+    {% if 'loop' in template %}
+    {{ template['loop'] }}
+    {% endif %}
+    {% if global['isWS'] %}
+    // handle Requests via WebSocket
+    wsb->loop();
+    {% endif %}
+    {% if global['isCOAP'] %}
+    // handle Requests via CoAP
+    coap->loop();
+    {% endif %}
+    {# server.handleClient(); #}
+}
+
+void connection(const char* ssid, const char* password) {
+    WiFi.begin(ssid, password);
+    
+    Serial.print("\nConnecting to ");
+    Serial.print(ssid);
+
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(1000);
+        Serial.print(".");
+        WiFi.begin(ssid, password);
+    }
+
+    Serial.println("\nConnected");
+    Serial.print("IP address: ");
+    ipS = WiFi.localIP();
+    Serial.println(ipS);
+
+    {% if global['isHTTP'] %}
+    urlServer = protocolServer + "://" + ipS.toString() + ":" + portServer + "/" + thingName;
+    {% endif %}
+    {% if global['isWS'] %}
+    urlSocket = protocolSocket + "://" + ipS.toString() + ":" + portSocket + "/" + thingName;
+    {% endif %}
+    {% if global['isCOAP'] %}
+    urlCoap = protocolCoap + "://" + ipS.toString() + ":" + portCoap + "/" + thingName;
+    {% endif %}
+}
+
+// Request functions
+String request1() {
+    {{ defineVariable('String', 'resp', 'iv') }}
+
+    Serial.println("\nGET Thing URL");
+    {% if global['isHTTP'] %}
+    {{ setVariable(True, 'resp', '[\\"" + urlServer + "\\"]') }}
+    {% elif global['isWS'] %}
+    {{ setVariable(True, 'resp', '[\\"" + urlSocket + "\\"]') }}
+    {% elif global['isCOAP'] %}
+    {{ setVariable(True, 'resp', '[\\"" + urlCoap + "\\"]') }}
+    {% endif %}
+    return resp;
+}
+
+String request2() {
+    Serial.println("\nGET Thing Description"); 
+    return td;
+}
+
+{# functions for property and actions used for HTTP Requests and WebSocket #}
+String request3() {
+    {% do capacity.update({'nump':10}) %}
+    {% for property in template['properties'] %}
+    {% if property['type'] != 'object' and property['type'] != 'array' %}
+    {% do capacity.update({'nump': capacity['nump'] + 1}) %}
+    {% endif %}
+    {% endfor %}
+    DynamicJsonDocument tmp(
+        {%- if 'properties' in capacity -%}
+        {{ capacity['properties'] + capacity['nump'] * 200 + 20 }}
+        {%- else -%}
+        {{ capacity['nump'] * 200 + 20 }}
+        {%- endif -%});
+    {{ defineVariable('String', 'resp', 'iv') }}
+    {{ defineVariable('JsonObject', 'obj', 'tmp.createNestedObject()') }}
+
+    Serial.println("\nGET all properties");
+    {% for i in range(0, template['numproperties']) %}
+    {{ setVariable(False, 'obj[property' + i | string + '_name]', 'property' + i | string + '_value') }}
+    {% endfor %}
+    {{ setVariable(False, 'serializeJson(obj, resp)') }}
+
+    return resp;
+}
+
+{% for property in template['properties'] %}
+{% set i = loop.index %}
+String request{{ i+3 }}() {
+    {{ defineVariable('String', 'resp', '') }}
+    {% if property['type'] == 'object' or property['type'] == 'array' %}
+    {{ defineVariable('String', 'tmp', '') }}
+    {% endif %}
+
+    Serial.printf("\nGET %s value\n", property{{ (i -1) }}_name);
+    {% if property['type'] == 'object' or property['type'] == 'array' %}
+    {{ setVariable(False, 'serializeJson(property' + (i -1) | string + '_value, tmp)') }}
+    {{ setVariable(True, 'resp', '{\\"" + (String) property' + (i -1) | string + '_name + "\\":" + tmp + "}') }}
+    {% else %}
+    {{ setVariable(True, 'resp', '{\\"" + (String) property' + (i -1) | string + '_name + "\\":" + property' + (i -1) | string + '_value + "}') }}
+    {% endif %}
+    
+    return resp;
+}
+
+{% endfor -%}
+
+{% for action in template['actions'] %}
+{%- set a = loop.index -%}
+String request{{ a+3+template['numproperties'] }}(String body) {
+    DynamicJsonDocument resp_doc(
+        {%- if action['input'] | length > 0 -%}
+        {{ action['input'] | length * 200 }}
+        {%- else -%}
+        20        
+        {%- endif -%});
+    {{ defineVariable('String', 'resp', 'iv') }}
+
+    Serial.printf("\nPOST invokeaction %s\n", action{{ a }}_name);
+    Serial.printf("Body received: %s\n", body.c_str());
+    
+    {{ setVariable(False, 'err', 'deserializeJson(resp_doc, body)') }}
+    if(err) {
+        Serial.printf("deserializeJson() failed with code %s", err.c_str());
+        {{ setVariable(False, 'resp', 'err.c_str()') }}
+        return resp;
+    }
+    else {
+        {% if action['input'] | length > 0 %}
+        if(
+        {%- for item in action['input'] -%}
+        resp_doc["{{ item['name'] }}"].isNull() 
+        {%- if not(loop.last) -%}
+        {{ ' || ' }}
+        {%- endif -%}
+        {%- endfor -%}
+        )
+            {{ setVariable(True, 'resp', 'InvalidInput') }}
+        else {
+            {{ defineVariable('bool', 'validInput', 'true') }}
+            {{ defineVariable('String', 'value', 'iv') }}
+
+            {{ defineVariable('string_nq', 'action' + a | string + '_input[' + action['input'] | length | string + ']', '{}') }}    
+            {% for item in action['input'] %}
+            {{ defineVariable(item['type'], 'action' + a | string + '_input' + loop.index | string + '_value', 'iv') }}
+            {% endfor %}
+
+            {{ setVariable(False, 'i', 0) }}
+            while(validInput and i<{{ 'action' + a | string + '_inputsNumber'}}) {
+                switch(i) {
+                    {% for item in action['input'] %}
+                    case {{ loop.index0 }}: {
+                        {{ setVariable(True, 'value', '') }}
+                        {{ setVariable(False, 'serializeJson(resp_doc["' + item['name'] + '"], value)') }}
+                        {{ setVariable(False, 'action' + a | string + '_input[' + loop.index0 | string + ']', 'value') }}
+                        {% if global['isArray'] %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value,action' + a | string + '_schema[' + loop.index0 | string + '],false)') }}
+                        {% else %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value,action' + a | string + '_schema[' + loop.index0 | string + '])') }}
+                        {% endif %}
+                    }
+                    break;
+
+                    {% endfor %}
+                }
+                {{ setVariable(False, 'i++') }}
+            }    
+
+            if(validInput) {
+                {% for item in action['input'] %}
+                {% if item['type'] == 'array' or item['type'] == 'object' %}
+                DynamicJsonDocument input{{ loop.index }}_doc(
+                    {%- if 'properties' in item -%}
+                    {{ item['properties'] | length * 200 }}
+                    {%- else -%}
+                    500
+                    {%- endif -%});
+                {% endif %}
+                {% endfor %}
+
+                {% for item in action['input'] %}
+                {% if item['type'] == 'integer' %}
+                {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'action' + a | string + '_input[' + loop.index0 | string + '].toInt()') }}
+                {% elif item['type'] == 'number' %}
+                {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'action' + a | string + '_input[' + loop.index0 | string + '].toDouble()') }}
+                {% elif item['type'] == 'boolean' %}
+                if(action{{ a }}_input[{{ loop.index0 }}].equals("true")) {
+                    {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'true') }}
+                }
+                else { 
+                    {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'false') }}
+                }
+                {% elif item['type'] == 'string'%}
+                {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'action' + a | string + '_input[' + loop.index0 | string + ']') }}
+                {% elif item['type'] == 'null' %}
+                {{ setVariable(False, 'serializeJson(resp_doc["' + item['name'] + '"], action' + a | string +'_input' + loop.index | string +'_value)') }}
+                {% elif item['type'] == 'array' %}
+                {{ setVariable(False, 'deserializeJson(input' + loop.index | string  + '_doc, action' + a | string + '_input[' + loop.index0 | string + '])') }}
+                {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'input' + loop.index | string  + '_doc.as<JsonArray>()') }}
+                {% elif item['type'] == 'object' %}
+                {{ setVariable(False, 'deserializeJson(input' + loop.index | string  + '_doc, action' + a | string + '_input[' + loop.index0 | string + '])') }}
+                {{ setVariable(False, 'action' + a | string + '_input' + loop.index | string + '_value', 'input' + loop.index | string + '_doc.as<JsonObject>()') }}
+                {% endif %}
+                {% endfor %}
+
+                {% if 'type' in action['output'] %}
+                {{ castType(action['output']['type']) }} output = {{ action['name'] }}(
+                {%- for item in action['input'] -%}
+                {%- if loop.last -%}
+                action{{ a }}_input{{ loop.index }}_value
+                {%- else -%}
+                action{{ a }}_input{{ loop.index }}_value,
+                {%- endif -%}
+                {%- endfor -%}
+                );   
+                {%- else %}
+                {{ action['name'] }}(
+                    {%- for item in action['input'] -%}
+                    {%- if loop.last -%}
+                    action{{ a }}_input{{ loop.index }}_value
+                    {%- else -%}
+                    action{{ a }}_input{{ loop.index }}_value,
+                    {%- endif -%}
+                    {%- endfor -%}
+                ); 
+                {% endif %}
+                {% if 'type' in action['output'] %}    
+                {% if action['output']['type'] != 'string' or action['output']['type'] != 'null' %}
+                {{ setVariable(False, 'resp', '(String) output') }}
+                {% else %}
+                {{ setVariable(False, 'resp', 'output') }}
+                {% endif %}
+                {% else %}
+                {{ setVariable(True, 'resp', '') }}
+                {% endif %}
+                {% if template['numevents'] > 0 %}
+                {{ defineVariable('String', 'ws_msg', 'iv') }}
+                {% for event in template['events'] %}
+                {% set enum = loop.index %}
+                {% for ae in event['actions'] %}
+                {% if ae == action['name'] %}
+
+                // {{ event['name'] }} condition
+                {% if global['isData'] %}
+                {{ defineVariable('String', 't_name', 'iv') }}
+                DynamicJsonDocument tmp_doc(
+                    {%- if 'data' in event -%}
+                    {{ event['data'] | string | length * 2 }}
+                    {%- else -%}
+                    20
+                    {%- endif -%});
+                {{ defineVariable('JsonObject', 'tmp_obj', 'tmp_doc.createNestedObject()') }}
+
+                if(events_dataSchema[{{ enum }}]) {
+                    for(i=0; i<es_doc[event{{ enum }}_name]["data"].size(); i++) {
+                        {{ setVariable(False, 't_name', '""') }}
+                        {{ setVariable(False, 'serializeJson(es_doc[event' + enum | string + '_name]["data"][i]["name"], t_name)') }}
+                        {{ setVariable(False, 't_name.replace("\\"", "")') }}
+                        {{ setVariable(False, 'tmp_obj[t_name]', 'es_doc[event' + enum | string + '_name]["data"][i]["value"]') }}
+                    }
+                    {{ setVariable(False, 'serializeJson(tmp_obj, ws_msg)') }}
+                }
+                {% endif %}
+                if({{ event['condition'] }}) {
+                    {% if 'http' in protocols['events'][event['name']] %}
+                    hlp->sendLongPollTXT(ws_msg, http_events_endpoint[{{ (enum -1) | string }}]);
+                    {% endif %}
+                    {% if 'ws' in protocols['events'][event['name']] %}
+                    wsb->sendWebSocketTXT(ws_msg, ws_events_endpoint[{{ (enum -1) | string }}]);
+                    {% endif %}
+                }
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+            }
+            else
+                {{ setVariable(True, 'resp', 'InvalidInput') }}
+        }
+        {% else %}
+        {% if 'type' in action['output'] %}
+            {{ castType(action['output']['type']) }} output = {{ action['name'] }}();
+        {%- else %}
+        {{ action['name'] }}(); 
+        {% endif %}
+        {% if 'type' in action['output'] %}    
+        {% if action['output']['type'] != 'string' or action['output']['type'] != 'null' %}
+        {{ setVariable(False, 'resp', '(String) output') }}
+        {% else %}
+        {{ setVariable(False, 'resp', 'output') }}
+        {% endif %}
+        {% else %}
+        {{ setVariable(True, 'resp', '') }}
+        {% endif %}
+        {% if template['numevents'] > 0 %}
+        {% for event in template['events'] %}
+        {% set enum = loop.index %}
+        {% for ae in event['actions'] %}
+        {% if ae == action['name'] %}
+        // {{ event['name'] }} condition
+        {{ defineVariable('String', 'ws_msg', 'iv') }}
+        {% if global['isData'] %}
+        {{ defineVariable('String', 't_name', 'iv') }}
+        DynamicJsonDocument tmp_doc(
+            {%- if 'data' in event -%}
+            {{ event['data'] | string | length * 2 }}
+            {%- else -%}
+            20
+            {%- endif -%});
+        {{ defineVariable('JsonObject', 'tmp_obj', 'tmp_doc.createNestedObject()') }}
+
+        if(events_dataSchema[{{ enum }}]) {
+            for(i=0; i<es_doc[event{{ enum }}_name]["data"].size(); i++) {
+                {{ setVariable(False, 't_name', '""') }}
+                {{ setVariable(False, 'serializeJson(es_doc[event' + enum | string + '_name]["data"][i]["name"], t_name)') }}
+                {{ setVariable(False, 't_name.replace("\\"", "")') }}
+                {{ setVariable(False, 'tmp_obj[t_name]', 'es_doc[event' + enum | string + '_name]["data"][i]["value"]') }}
+            }
+            {{ setVariable(False, 'serializeJson(tmp_obj, ws_msg)') }}
+        }
+        {% endif %}
+         if({{ event['condition'] }}) {
+            {% if 'http' in protocols['events'][event['name']] %}
+            hlp->sendLongPollTXT(ws_msg, http_events_endpoint[{{ (enum -1) | string }}]);
+            {% endif %}
+            {% if 'ws' in protocols['events'][event['name']] %}
+            wsb->sendWebSocketTXT(ws_msg, ws_events_endpoint[{{ (enum -1) | string }}]);
+            {% endif %}
+            
+        }
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
+        {% endif %}
+    }
+    return resp;
+}
+{% endfor %}
+
+{% if template['numactions'] > 0 %}
+// handle Input Types
+{% if global['isArray'] -%}
+bool handleInputType(String value, String schema, bool array) {
+{% else %}
+bool handleInputType(String value, String schema) {   
+{% endif -%}     
+    {{ '\t' }}DynamicJsonDocument schema_doc(
+        {%- do capacity.update({'maxInput':20}) -%}
+        {%- do capacity.update({'maxInputObj':0}) -%}
+        {%- for action in template['actions'] -%}
+        {%- if 'input' in action -%}
+        {%- for item in action['input'] -%}
+        {%- if item['type'] == 'object' -%}
+        {%- if 'properties' in item -%}
+        {%- set dim1 = action['input'] | length * 200 + item['properties'] | length * 200 -%}
+        {%- set dim2 = item['properties'] | length * 200 -%}
+        {%- if dim1 > capacity['maxInput'] -%}
+        {%- do capacity.update({'maxInput': dim1}) -%}
+        {%- endif -%}
+        {%- if dim2 > capacity['maxInputObj'] -%}
+        {%- do capacity.update({'maxInputObj': dim2}) -%}
+        {%- endif -%}
+        {%- else -%}
+        {%- set dim1 = action['input'] | length * 200 + 500 -%}
+        {%- set dim2 = 500 -%}
+        {%- if dim1 > capacity['maxInput'] -%}
+        {%- do capacity.update({'maxInput': dim1}) -%}
+        {%- endif -%}
+        {%- if dim2 > capacity['maxInputObj'] -%}
+        {%- do capacity.update({'maxInputObj': dim2}) -%}
+        {%- endif -%}
+        {%- endif -%}
+        {%- elif item['type'] == 'array' -%}
+        {%- set dim1 = action['input'] | length * 200 + 2000 -%}
+        {%- set dim2 = 2000 -%}
+        {%- if dim1 > capacity['maxInput'] -%}
+        {%- do capacity.update({'maxInput': dim1}) -%}
+        {%- endif -%}
+        {%- if dim2 > capacity['maxInputObj'] -%}
+        {%- do capacity.update({'maxInputObj': dim2}) -%}
+        {%- endif -%}
+        {%- else -%}
+        {%- set dim1 = action['input'] | length * 200 -%}
+        {%- if dim1 > capacity['maxInput'] -%}
+        {%- do capacity.update({'maxInput': dim1}) -%}
+        {%- endif -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {%- endif -%}
+        {%- endfor -%}
+        {{ capacity['maxInput'] }});
+    {% if global['isArray'] or global['isObject'] %}
+    DynamicJsonDocument value_doc({{ capacity['maxInputObj'] }});
+    {% endif %}
+    {% if global['isArray'] %}
+    {{ defineVariable('JsonArray', 'array_value', 'iv') }}
+    {% endif %}
+    {% if global['isObject'] %}
+    {{ defineVariable('JsonObject', 'obj_value', 'iv') }}
+    {{ defineVariable('String', 'p', '') }}
+    {% endif %}
+    {{ defineVariable('bool', 'validInput', 'true') }}
+
+    {{ setVariable(False, 'deserializeJson(schema_doc, schema)') }}
+    {{ defineVariable('JsonObject', 'obj_schema', 'schema_doc.as<JsonObject>()') }}
+    {{ defineVariable('string_nq', 'type', 'obj_schema["type"]') }}
+    
+    if(value[0] == '"')
+        {{ setVariable(False, 'value.remove(0)') }}
+    if(value[value.length()-1] == '"')    
+        {{ setVariable(False, 'value.remove(value.length()-1)') }}
+    
+    {% if global['isString'] or global['isArrayString'] %}
+    if(type.equals("string")) {
+        {% if global['isArrayString'] %}
+        if(array) {
+            {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+            {{ setVariable(False, 'array_value', 'value_doc.as<JsonArray>()') }}
+            for(i=0; i<array_value.size(); i++) {
+                {{ defineVariable('string_nq', 'ae', 'array_value[i]') }}
+                if(ae.equalsIgnoreCase("null")) {
+                    {{ setVariable(False, 'validInput', 'false') }}
+                    break;
+                }
+            }   
+        }
+        else if(value.equalsIgnoreCase("null")) 
+            {{ setVariable(False, 'validInput', 'false') }}
+        {% else %}
+        if(value.equalsIgnoreCase("null")) 
+            {{ setVariable(False, 'validInput', 'false') }}
+        {% endif %}    
+    }
+    {% endif %}
+    {% if global['isBoolean'] or global['isArrayBoolean'] %}
+    {% if global['isString'] or global['isArrayString'] %}{{ '\t\telse if' }}{% else %}{{ '\t\tif' }}{% endif %}(type.equals("boolean")) {
+        {% if global['isArrayBoolean'] %}
+        if(array) {
+            {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+            {{ setVariable(False, 'array_value', 'value_doc.as<JsonArray>()') }}
+            for(i=0; i<array_value.size(); i++) {
+                {{ defineVariable('string_nq', 'ae', 'array_value[i]') }}
+                if(!ae.equals("true") && !ae.equals("false")) {
+                    {{ setVariable(False, 'validInput', 'false') }}
+                    break;
+                }
+            }
+        }
+        else if(!value.equals("true") && !value.equals("false"))
+            {{ setVariable(False, 'validInput', 'false') }}
+        {% else %}   
+    if(!value.equals("true") && !value.equals("false"))
+        {{ setVariable(False, 'validInput', 'false') }}
+        {%- endif %} 
+    }
+    {% endif %}
+    {% if global['isInteger'] or global['isNumber'] or global['isArrayInteger'] or global['isArrayNumber'] %}
+    {% if global['isString'] or global['isArrayString'] or global['isBoolean'] or global['isArrayBoolean'] %}{{ '\t\telse if' }}{% else %}{{ '\t\tif' }}{% endif %}(type.equals("integer") || type.equals("number")) {
+        {% if global['isArrayInteger'] or global['isArrayNumber'] %}
+        if(array) {
+            {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+            {{ setVariable(False, 'array_value', 'value_doc.as<JsonArray>()') }}
+            for(i=0; i<array_value.size(); i++) {
+                {{ defineVariable('string_nq', 'ae', 'array_value[i]') }}
+                {{ defineVariable('int', 'dot_count', '0') }}
+                {{ setVariable(False, 'j', 0) }}
+                while(validInput && j<ae.length()) { 
+                    if(!isDigit(ae[j])) 
+                        {{ setVariable(False, 'validInput', 'false') }}  
+                    else if(ae[j] == '.')
+                        if(j == 0 || j == ae.length()-1 || dot_count > 1)
+                            {{ setVariable(False, 'validInput', 'false') }}
+                        else 
+                            {{ setVariable(False, 'dot_count++') }}    
+                    {{ setVariable(False, 'j++') }}    
+                }
+                if(!validInput)   
+                    break; 
+            }
+            {% if global['isArrayMin'] or global['isArrayMax'] %}
+            if(validInput) {
+                {{ defineVariable('int', 'input[array_value.size()]', '{}') }}
+                for(i=0; i<array_value.size(); i++) 
+                    if(type.equals("integer"))
+                        {{ setVariable(False, 'input[i]', 'array_value[i].toInt()') }}
+                    else 
+                        {{ setVariable(False, 'input[i]', 'array_value[i].toDouble()') }}    
+                {% if global['isArrayMin'] %}
+                if(!obj_schema["minimum"].isNull()) 
+                    for(i=0; i<array_value.size(); i++)
+                        if(input[i] < obj_schema["minimum"]) {
+                            {{ setVariable(False, 'validInput', 'false') }}
+                            break;
+                        }
+                {% endif %}
+                {% if global['isArrayMax'] %}        
+                if(!obj_schema["maximum"].isNull())  
+                    for(i=0; i<array_value.size(); i++)
+                        if(input[i] > obj_schema["maximum"]) {
+                            {{ setVariable(False, 'validInput', 'false') }}
+                            break;
+                        }   
+                {% endif %}          
+            }
+            {% endif %}       
+        }
+        else {
+            {{ defineVariable('int', 'dot_count', '0') }}
+            {{ setVariable(False, 'i', 0) }}
+            while(validInput && i<value.length()) {
+                if(!isDigit(value[i])) 
+                    {{ setVariable(False, 'validInput', 'false') }}
+                else if(value[i] == '.')
+                    if(i == 0 || i == value.length()-1 || (dot_count > 1)
+                        {{ setVariable(False, 'validInput', 'false') }}
+                    else 
+                        {{ setVariable(False, 'dot_count++') }}    
+                {{ setVariable(False, 'i++') }}          
+            } 
+            {% if global['isMin'] or global['isMax'] %}
+            if(validInput) {
+                {{ defineVariable('double', 'input', 'value.toDouble()') }} 
+                {% if global['isMin'] %}
+                if(!obj_schema["minimum"].isNull()) 
+                    if(input < obj_schema["minimum"])
+                        {{ setVariable(False, 'validInput', 'false') }}
+                {% endif %}
+                {% if global['isMax'] %}        
+                if(!obj_schema["maximum"].isNull())  
+                    if(input > obj_schema["maximum"])
+                        {{ setVariable(False, 'validInput', 'false') }}     
+                {% endif %}          
+            }
+            {% endif %}
+        }
+        {% else %}
+        {{ defineVariable('int', 'dot_count', '0') }}
+        {{ setVariable(False, 'i', 0) }}
+        while(validInput && i<value.length()) {
+            if(!isDigit(value[i])) 
+                {{ setVariable(False, 'validInput', 'false') }}
+            else if(value[i] == '.')
+                if(i == 0 || i == value.length()-1 || dot_count > 1)
+                    {{ setVariable(False, 'validInput', 'false') }}
+                else 
+                    {{ setVariable(False, 'dot_count++') }}    
+            {{ setVariable(False, 'i++') }}          
+        } 
+        {% if global['isMin'] or global['isMax'] %}
+        if(validInput) {
+            {{ defineVariable('double', 'input', 'value.toDouble()') }} 
+            {% if global['isMin'] %}
+            if(!obj_schema["minimum"].isNull()) 
+                if(input < obj_schema["minimum"])
+                    {{ setVariable(False, 'validInput', 'false') }}
+            {% endif %}
+            {% if global['isMax'] %}        
+            if(!obj_schema["maximum"].isNull())  
+                if(input > obj_schema["maximum"])
+                    {{ setVariable(False, 'validInput', 'false') }}     
+            {% endif %}          
+        }
+        {% endif %}
+        {% endif %}
+    }
+    {% endif %}
+    {% if global['isArray']  %}
+    {% if global['isString'] or global['isArrayString'] or global['isBoolean'] or global['isArrayBoolean'] or global['isInteger'] or global['isArrayInteger'] or global['isNumber'] or global['isArrayNumber'] %}{{ '\t\telse if' }}{% else %}{{ '\t\tif' }}{% endif %}(type.equals("array")) {
+        {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+        {{ setVariable(False, 'array_value', 'value_doc.as<JsonArray>()') }}
+        if(array_value.isNull()) 
+            {{ setVariable(False, 'validInput', 'false') }}
+        else {
+            {% if global['isMinItems'] %}
+            if(!obj.schema["minItems"].isNull())
+                if(array_value.size() < obj.schema["minItems"])    
+                    {{ setVariable(False, 'validInput', 'false') }}
+            {% endif %}
+            {% if global['isMaxItems'] %}
+            if(!obj.schema["maxItems"].isNull())
+                if(array_value.size() > obj.schema["maxItems"])    
+                    {{ setVariable(False, 'validInput', 'false') }}
+            {% endif %}
+            {% if global['isMinItems'] or global['isMaxItems'] %}
+            if(validInput) {
+                {{ setVariable(True, 'schema', '') }}
+                {{ setVariable(False, 'serializeJson(obj_schema["items"], schema)') }}
+                {{ setVariable(False, 'validInput', 'handleInputType(value, schema, true)') }}
+            }
+            {% else %}
+            {{ setVariable(True, 'schema', '') }}
+            {{ setVariable(False, 'serializeJson(obj_schema["items"], schema)') }}
+            {{ setVariable(False, 'validInput', 'handleInputType(value, schema, true)') }}
+            {% endif %}
+        }
+    }
+    {% endif %}
+    {% if global['isObject'] or global['isArrayObject'] %}
+    {% if global['isArrayObject'] and global['isProperty'] %}
+    {% if global['isString'] or global['isArrayString'] or global['isBoolean'] or global['isArrayBoolean'] or global['isInteger'] or global['isArrayInteger'] or global['isNumber'] or global['isArrayNumber'] or global['isArray'] %}{{ '\t\telse if' }}{% else %}{{ '\t\tif' }}{% endif %}(type.equals("object")) {
+        if(array) {
+            {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+            {{ setVariable(False, 'array_value', 'value_doc.as<JsonArray>()') }}
+            for(i=0; i<array_value.size(); i++) {
+                {% if global['isRequired'] %}
+                for(j=0; j<obj_schema["required"].size(); j++) {
+                    {{ setVariable(False, 'p', 'iv') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["required"][j], p)') }}
+                    {{ setVariable(False, 'p.replace("\\"", "")') }}
+                    if(array_value[i][p].isNull()) {
+                        {{ setVariable(False, 'validInput', 'false') }}
+                        break;
+                    }
+                }
+                if(validInput) {
+                    for(j=0; i<obj_schema["properties"].size(); j++) {
+                        {{ setVariable(False, 'p', 'iv') }}
+                        {{ setVariable(False, 'serializeJson(obj_schema["properties"][j]["name"], p)') }}
+                        {{ setVariable(False, 'p.replace("\\"", "")') }}
+                        if(!array_value[i][p].isNull()) {
+                            {{ setVariable(True, 'schema', '') }}
+                            {{ setVariable(True, 'value', '') }}
+                            {{ setVariable(False, 'serializeJson(obj_schema["properties"][j], schema)') }}
+                            {{ setVariable(False, 'serializeJson(array_value[i][p], value)') }}
+                            {% if global['isArray'] %}
+                            {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                            {% else %}
+                            {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                            {% endif %}
+                        }
+                    }
+                }
+                else
+                    break;    
+                {% else %}
+                for(j=0; j<obj_schema["properties"].size(); j++) {
+                    {{ setVariable(False, 'p', 'iv') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["properties"][j]["name"], p)') }}
+                    {{ setVariable(False, 'p.replace("\\"", "")') }}
+                    if(!array_value[i][p].isNull()) {
+                        {{ setVariable(True, 'schema', '') }}
+                        {{ setVariable(True, 'value', '') }}
+                        {{ setVariable(False, 'serializeJson(obj_schema["properties"][j], schema)') }}
+                        {{ setVariable(False, 'serializeJson(array_value[i][p], value)') }}
+                        {% if global['isArray'] %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                        {% else %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                        {% endif %}
+                    }
+                }
+                {% endif %}
+            }
+        }
+        else {
+            {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+            {{ setVariable(False, 'obj_value', 'value_doc.as<JsonObject>()') }}
+            if(obj_value.isNull())
+                {{ setVariable(False, 'validInput', 'false') }}
+            {% if global['isProperty'] %}
+            else {
+                {% if global['isRequired'] %}
+                for(i=0; i<obj_schema["required"].size(); i++) {
+                    {{ setVariable(False, 'p', 'iv') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["required"][i], p)') }}
+                    {{ setVariable(False, 'p.replace("\\"", "")') }}
+                    if(obj_value[p].isNull()) {
+                        {{ setVariable(False, 'validInput', 'false') }}
+                        break;
+                    }
+                }
+                if(validInput) {
+                    for(i=0; i<obj_schema["properties"].size(); i++) {
+                        {{ setVariable(True, 'p', '') }}
+                        {{ setVariable(False, 'serializeJson(obj_schema["properties"][i]["name"], p)') }}
+                        {{ setVariable(False, 'p.replace("\\"", "")') }}
+                        if(!obj_value[p].isNull()) {
+                            {{ setVariable(True, 'schema', '') }}
+                            {{ setVariable(True, 'value', '') }}
+                            {{ setVariable(False, 'serializeJson(obj_schema["properties"][i], schema)') }}
+                            {{ setVariable(False, 'serializeJson(obj_value[p], value)') }}
+                            {% if global['isArray'] %}
+                            {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                            {% else %}
+                            {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                            {% endif %}
+                        }
+                    }
+                }
+                {% else %}
+                for(i=0; i<obj_schema["properties"].size(); i++) {
+                    {{ setVariable(True, 'p', '') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["properties"][i]["name"], p)') }}
+                    {{ setVariable(False, 'p.replace("\\"", "")') }}
+                    if(!obj_value[p].isNull()) {
+                        {{ setVariable(True, 'schema', '') }}
+                        {{ setVariable(True, 'value', '') }}
+                        {{ setVariable(False, 'serializeJson(obj_schema["properties"][i], schema)') }}
+                        {{ setVariable(False, 'serializeJson(obj_value[p], value)') }}
+                        {% if global['isArray'] %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                        {% else %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                        {% endif %}
+                    }
+                }
+                {% endif %}
+            }
+            {% endif %}
+        }
+    }
+    {% elif not(global['isArrayObject']) %}
+    else if(type.equals("object")) {
+        {{ setVariable(False, 'deserializeJson(value_doc, value)') }}
+        {{ setVariable(False, 'obj_value', 'value_doc.as<JsonObject>()') }}
+        if(obj_value.isNull())
+            {{ setVariable(False, 'validInput', 'false') }}
+        {% if global['isProperty'] %}
+        else {
+            {% if global['isRequired'] %}
+            for(i=0; i<obj_schema["required"].size(); i++) {
+                {{ setVariable(True, 'p', '') }}
+                {{ setVariable(False, 'serializeJson(obj_schema["required"][i], p)') }}
+                {{ setVariable(False, 'p.replace("\\"", "")') }}
+                if(obj_value[p].isNull()) {
+                    {{ setVariable(False, 'validInput', 'false') }}
+                    break;
+                }
+            }
+            if(validInput) {
+                for(i=0; i<obj_schema["properties"].size(); i++) {
+                    {{ setVariable(True, 'p', '') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["properties"][i]["name"], p)') }}
+                    {{ setVariable(False, 'p.replace("\\"", "")') }}
+                    if(!obj_value[p].isNull()) {
+                        {{ setVariable(True, 'schema', '') }}
+                        {{ setVariable(True, 'value', '') }}
+                        {{ setVariable(False, 'serializeJson(obj_schema["properties"][i], schema)') }}
+                        {{ setVariable(False, 'serializeJson(obj_value[p], value)') }}
+                        {% if global['isArray'] %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                        {% else %}
+                        {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                        {% endif %}
+                    }
+                }
+            }
+            {% else %}
+            for(i=0; i<obj_schema["properties"].size(); i++) {
+                {{ setVariable(True, 'p', '') }}
+                {{ setVariable(False, 'serializeJson(obj_schema["properties"][i]["name"], p)') }}
+                {{ setVariable(False, 'p.replace("\\"", "")') }}
+                if(!obj_value[p].isNull()) {
+                    {{ setVariable(True, 'schema', '') }}
+                    {{ setVariable(True, 'value', '') }}
+                    {{ setVariable(False, 'serializeJson(obj_schema["properties"][i], schema)') }}
+                    {{ setVariable(False, 'serializeJson(obj_value[p], value)') }}
+                    {% if global['isArray'] %}
+                    {{ setVariable(False, 'validInput', 'handleInputType(value, schema, false)') }} 
+                    {% else %}
+                    {{ setVariable(False, 'validInput', 'handleInputType(value, schema)') }} 
+                    {% endif %}
+                }
+            }
+            {% endif %}
+        }
+        {% endif %}  
+    }
+    {% endif %}
+    {% endif %}
+    return validInput;
+}
+
+void emitEvent(String txt, String event_endpoint) {
+    {{ defineVariable('String', 'endpoint', ['"/"', '+', 'thingName', '+', '"/events/"', '+ event_endpoint']) }}
+    {% if global['isHTTP'] %}
+    hlp->sendLongPollTXT(txt, endpoint);
+    {% endif %}
+    {% if global['isWS'] %}
+    wsb->sendWebSocketTXT(txt, endpoint);
+    {% endif %}
+    {% if global['isCOAP'] %}
+    coap->sendCoAPTXT(txt, endpoint);
+    {% endif %}
+}
+
+// Action functions
+{% for action in template['actions'] %}
+{{ defineFunction(action['name'], action['input'], action['output'], action['body'], action['source'], True) }}
+{% endfor %}
+{% endif %}

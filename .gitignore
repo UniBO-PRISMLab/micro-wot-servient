@@ -1,0 +1,8 @@
+node_modules
+# asd*
+tmp
+# test*
+libs_old
+*/*\.esp32\.esp32.*
+coap-test*
+lib

@@ -1,0 +1,153 @@
+{
+  "title": "Build",
+  "type": "object",
+  "id": "build",
+  "required": [
+    "ssid",
+    "password",
+    "portserver",
+    "portsocket",
+    "portcoap",
+    "libraries",
+    "constants",
+    "globals",
+    "setup",
+    "loop",
+    "code"
+  ],
+  "options": {
+    "disable_edit_json": true,
+    "disable_collapse": true,
+    "disable_properties": true
+  },
+  "properties": {
+    "ssid": {
+      "type": "string",
+      "title": "Network name",
+      "description": "Network SSID to which the Embedded-System will connect",
+      "minLength": 4
+    },
+    "password": {
+      "type": "string",
+      "format": "password",
+      "title": "Network password",
+      "description": "If network has no password, leave the field blank.",
+      "default": ""
+    },
+    "portserver": {
+      "type": "string",
+      "title": "WebServer port",
+      "pattern": "[0-9]",
+      "default": "80"
+    },
+    "portsocket": {
+      "type": "string",
+      "title": "WebSocket port",
+      "pattern": "[0-9]",
+      "default": "81"
+    },
+    "portcoap": {
+      "type": "string",
+      "title": "CoAP port",
+      "pattern": "[0-9]",
+      "default": "5683"
+    },
+    "libraries": {
+      "type": "array",
+      "format": "table",
+      "title": "Arduino libraries",
+      "description": "Include libraries from Arduino repository.",
+      "uniqueItems": true,
+      "items": {
+        "title": "Arduino libraries",
+        "description": "Libraries in format 'library_name'.h",
+        "type": "string"
+      },
+      "options": {
+        "collapsed": true
+      }
+    },
+    "constants": {
+      "type": "array",
+      "format": "table",
+      "title": "Additional constants",
+      "description": "#define entries",
+      "uniqueItems": true,
+      "items": {
+        "title": "Constants",
+        "type": "string"
+      },
+      "options": {
+        "collapsed": true
+      }
+    },
+    "globals": {
+      "type": "array",
+      "format": "table",
+      "title":"Additional global variables",
+      "items": {
+        "type": "object",
+        "title": "Global variable",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "string"
+          }
+        }
+      },
+      "options": {
+        "collapsed": true
+      }
+    },
+    "setup": {
+      "type": "string",
+      "format": "c++",
+      "options": {
+        "ace": {
+          "theme": "ace/theme/twilight",
+          "tabSize": 2,
+          "useSoftTabs": true,
+          "wrap": true
+        }
+      },
+      "title": "Additional setup() code",
+      "description": "Code will be added to void setup() function"
+    },
+    "loop": {
+      "type": "string",
+      "format": "c++",
+      "options": {
+        "ace": {
+          "theme": "ace/theme/twilight",
+          "tabSize": 2,
+          "useSoftTabs": true,
+          "wrap": true
+        }
+      },
+      "title": "Additional loop() code",
+      "description": "Code will be added to void loop() function"
+    },
+    "code": {
+      "type": "string",
+      "format": "c++",
+      "options": {
+        "ace": {
+          "theme": "ace/theme/twilight",
+          "tabSize": 2,
+          "useSoftTabs": true,
+          "wrap": true
+        }
+      },
+      "title": "Additional code",
+      "description": "Code will be added to the project"
+    }
+  }
+}

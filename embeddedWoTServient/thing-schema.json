@@ -1,0 +1,797 @@
+{
+    "title": "WoT TD Schema - 16 October 2019",
+    "description": "JSON Schema for validating TD instances against the TD model",
+    "$schema ": "http://json-schema.org/draft-07/schema#",
+    "definitions":
+    {
+        "thing-context-w3c-uri": 
+        {
+            "type": "string",
+            "enum": [
+                "https://www.w3.org/2019/wot/td/v1"
+            ]
+        },
+        "anyUri": 
+        {
+            "type": "string",
+            "format": "iri-reference"
+        },
+        "thing-context": 
+        {
+            "oneOf": 
+            [
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "anyOf": 
+                        [
+                            {
+                                "$ref": "#/definitions/anyUri"
+                            },
+                            {
+                                "type": "object"
+                            }
+                        ]
+                    },
+                    "contains": 
+                    {
+                        "$ref": "#/definitions/thing-context-w3c-uri"
+                    }
+                },
+                {
+                    "$ref": "#/definitions/thing-context-w3c-uri"
+                }
+            ]
+        },
+        "type_declaration": 
+        {
+            "oneOf": 
+            [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "string"
+                    }
+                }
+            ]
+        },
+        "description": 
+        {
+            "type": "string"
+        },
+        "title": 
+        {
+            "type": "string"
+        },
+        "links":
+        {
+            "type": "array",
+            "items": 
+            {
+                "type": "object",
+                "properties":
+                {
+                    "href":
+                    {
+                        "$ref": "#/definitions/anyUri"
+                    },
+                    "type":
+                    {
+                        "type": "string"
+                    },
+                    "rel":
+                    {
+                        "type": "string"
+                    },
+                    "anchor":
+                    {
+                        "$ref": "#/definitions/anyUri"
+                    }
+                },
+                "required":
+                [
+                    "href"
+                ]
+            }
+        },
+        "objectSchema": {
+            "type": "object",
+            "properties": 
+            {
+
+                "properties":
+                {
+                    "type" : "object",
+                    "additionalProperties": 
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "required": 
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "string"
+                    }
+                }
+
+            }
+        },
+        "arraySchema": {
+            "type": "object",
+            "properties":
+            {
+                "items" :
+                {
+                    "oneOf":
+                    [
+                        {
+                            "type": "object",
+                            "additionalProperties":
+                            {
+                                "$ref": "#/definitions/dataSchema"
+                            }
+                        },
+                        {
+                            "type": "array",
+                            "items":
+                            {
+                                "type": "object",
+                                "additionalProperties":
+                                {
+                                    "$ref": "#/definitions/dataSchema"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "minItems":
+                {
+                    "type": "number"
+                },
+                "maxItems":
+                {
+                    "type": "number"
+                }
+            }
+        },
+        "numberSchema": {
+            "type": "object",
+            "properties":
+            {
+                "minimum": 
+                {
+                    "type": "number"
+                },
+                "maximum": 
+                {
+                    "type": "number"
+                }
+            }
+        },
+        "dataSchema": {
+            "type": "object",
+            "properties": 
+            {
+                "@type": 
+                {
+                    "$ref": "#/definitions/type_declaration"
+                },
+                "description": 
+                {
+                    "$ref": "#/definitions/description"
+                },
+                "title": 
+                {
+                    "$ref": "#/definitions/title"
+                },
+                "writeOnly": 
+                {
+                    "type": "boolean"
+                },
+                "readOnly": 
+                {
+                    "type": "boolean"
+                },
+                "format": 
+                {
+                    "type": "string"
+                },
+                "type": 
+                {
+                    "type": "string",
+                    "enum": 
+                    [
+                        "boolean",
+                        "integer",
+                        "number",
+                        "string",
+                        "object",
+                        "array",
+                        "null"
+                    ]
+                },
+                "properties":
+                {
+                    "type" : "object",
+                    "additionalProperties": 
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "required": 
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "string"
+                    }
+                },
+                "minItems":
+                {
+                    "type": "number"
+                },
+                "maxItems":
+                {
+                    "type": "number"
+                },
+                "minimum": 
+                {
+                    "type": "number"
+                },
+                "maximum": 
+                {
+                    "type": "number"
+                },
+                "enum":
+                {
+                    "type": "array"
+                },
+                "unit":
+                {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true
+        },
+        "property_element":
+        {
+            "type": "object",
+            "properties": 
+            {
+                "@type": 
+                {
+                    "$ref": "#/definitions/type_declaration"
+                },
+                "description": 
+                {
+                    "$ref": "#/definitions/description"
+                },
+                "title": 
+                {
+                    "$ref": "#/definitions/title"
+                },
+                "forms": 
+                {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": 
+                    {
+                        "$ref": "#/definitions/form_property_element"
+                    }
+                },
+                "observable":
+                {
+                    "type": "boolean"
+                },
+                "writeOnly": 
+                {
+                    "type": "boolean"
+                },
+                "readOnly": 
+                {
+                    "type": "boolean"
+                },
+                "format": 
+                {
+                    "type": "string"
+                },
+                "type": 
+                {
+                    "type": "string",
+                    "enum": 
+                    [
+                        "boolean",
+                        "integer",
+                        "number",
+                        "string",
+                        "object",
+                        "array",
+                        "null"
+                    ]
+                },
+                "properties":
+                {
+                    "type" : "object",
+                    "additionalProperties": 
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "required": 
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "string"
+                    }
+                },
+                "minItems":
+                {
+                    "type": "number"
+                },
+                "maxItems":
+                {
+                    "type": "number"
+                },
+                "minimum": 
+                {
+                    "type": "number"
+                },
+                "maximum": 
+                {
+                    "type": "number"
+                },
+                "oneOf": 
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "object",
+                        "additionalProperties": 
+                        {
+                            "$ref": "#/definitions/dataSchema"
+                        }
+                    }
+                }
+            },
+            "required": 
+            [
+                "forms"
+            ],
+            "additionalProperties": true
+        },
+        "action_element": {
+            "type": "object",
+            "properties": 
+            {
+                "@type": 
+                {
+                    "$ref": "#/definitions/type_declaration"
+                },
+                "description": 
+                {
+                    "type": "string"
+                },
+                "title": 
+                {
+                    "$ref": "#/definitions/title"
+                },
+                "forms": 
+                {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": 
+                    {
+                        "$ref": "#/definitions/form_action_element"
+                    }
+                },
+                "input": 
+                {
+                    "type":"object",
+                    "additionalProperties":  
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "output": 
+                {
+                    "type":"object",
+                    "additionalProperties": true
+                },
+                "safe": 
+                {
+                    "type": "boolean"
+                },
+                "idempotent": 
+                {
+                    "type": "boolean"
+                },
+                "oneOf": 
+                {
+                    "type": "array",
+                    "items": 
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                }
+            },
+            "additionalProperties": true
+        },
+        "event_element":
+        {
+            "type": "object",
+            "properties":
+            {
+                "@type": 
+                {
+                    "$ref": "#/definitions/type_declaration"
+                },
+                "description": 
+                {
+                    "type": "string"
+                },
+                "title": 
+                {
+                    "$ref": "#/definitions/title"
+                },
+                "forms": 
+                {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": 
+                    {
+                        "$ref": "#/definitions/form_event_element"
+                    }
+                },
+                "data": 
+                {
+                    "type":"object",
+                    "additionalProperties":  
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "subscription": 
+                {
+                    "type":"object",
+                    "additionalProperties":  
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                },
+                "cancellation": 
+                {
+                    "type":"object",
+                    "additionalProperties":  
+                    {
+                        "$ref": "#/definitions/dataSchema"
+                    }
+                }
+            },
+            "required": 
+            [
+                "forms"
+            ],
+            "additionalProperties": true
+        },
+        "form_property_element": {
+            "type": "object",
+            "properties": 
+            {
+                "href": 
+                {
+                    "$ref": "#/definitions/anyUri"
+                },
+                "contentType": 
+                {
+                    "type": "string",
+                    "enum":
+                    [
+                        "text/html",
+                        "application/json"
+                    ]
+                },
+                "op": {
+                    "oneOf": 
+                    [
+                        {
+                            "type": "string",
+                            "enum": 
+                            [
+                                "readproperty",
+                                "writeproperty"
+                            ]
+                        },
+                        {
+                            "type": "array",
+                            "items": 
+                            {
+                                "type": "string",
+                                "enum": 
+                                [
+                                    "readproperty",
+                                    "writeproperty"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": 
+            [
+                "href"
+            ],
+            "additionalProperties": 
+            { 
+                "type": "string" 
+            }
+        },
+        "form_action_element":
+        {
+            "type": "object",
+            "properties": 
+            {
+                "href": 
+                {
+                    "$ref": "#/definitions/anyUri"
+                },
+                "contentType": 
+                {
+                    "type": "string",
+                    "enum":
+                    [
+                        "text/html",
+                        "application/json"
+                    ]
+                },
+                "op": {
+                    "oneOf": 
+                    [
+                        {
+                            "type": "string",
+                            "enum": 
+                            [
+                               "invokeaction"
+                            ]
+                        },
+                        {
+                            "type": "array",
+                            "items": 
+                            {
+                                "type": "string",
+                                "enum": 
+                                [
+                                    "invokeaction"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": 
+            [
+                "href"
+            ],
+            "additionalProperties": 
+            { 
+                "type": "string" 
+            }
+        },
+        "form_event_element":
+        {
+            "type": "object",
+            "properties": 
+            {
+                "href": 
+                {
+                    "$ref": "#/definitions/anyUri"
+                },
+                "contentType": 
+                {
+                    "type": "string",
+                    "enum":
+                    [
+                        "text/html",
+                        "application/json"
+                    ]
+                },
+                "op": {
+                    "oneOf": 
+                    [
+                        {
+                            "type": "string",
+                            "enum": 
+                            [
+                                "subscribeevent",
+                                "unsubscribeevent"
+                            ]
+                        },
+                        {
+                            "type": "array",
+                            "items": 
+                            {
+                                "type": "string",
+                                "enum": 
+                                [
+                                    "subscribeevent",
+                                    "unsubscribeevent"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": 
+            [
+                "href"
+            ],
+            "additionalProperties": 
+            { 
+                "type": "string" 
+            }
+        },
+        "form_root_element": 
+        {
+            "type": "object",
+            "properties": 
+            {
+                "href": 
+                {
+                    "$ref": "#/definitions/anyUri"
+                },
+                "contentType": 
+                {
+                    "enum":
+                    [
+                        "text/html",
+                        "application/json"
+                    ]
+                },
+                "op": 
+                {
+                    "oneOf": 
+                    [
+                        {
+                            "type": "string",
+                            "enum": 
+                            [
+                                "readallproperties",
+                                "writeallproperties",
+                                "readmultipleproperties",
+                                "writemultipleproperties"
+                            ]
+                        },
+                        {
+                            "type": "array",
+                            "items": 
+                            {
+                                "type": "string",
+                                "enum": 
+                                [
+                                    "readallproperties",
+                                    "writeallproperties",
+                                    "readmultipleproperties",
+                                    "writemultipleproperties"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "required": 
+            [
+                "href"
+            ],
+            "additionalProperties": 
+            { 
+                "type": "string" 
+            }
+        }
+    },
+    "type": "object",
+    "properties":
+    {
+        "title":
+        {
+            "$ref": "#/definitions/title"
+        },
+        "@context": 
+        {
+            "$ref": "#/definitions/thing-context"
+        },
+        "@type": 
+        {
+            "$ref": "#/definitions/type_declaration"
+        },
+        "id": 
+        {
+            "type": "string",
+            "format": "uri"
+        },
+        "security": {
+            "$ref": "#/definitions/type_declaration"
+        },
+        "securityDefinitions": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "description": 
+        {
+            "$ref": "#/definitions/description"
+        },
+        "version":
+        {
+            "type": "string"
+        },
+        "created":
+        {
+            "type": "string",
+            "format": "date-time"
+        },
+        "modified":
+        {
+            "type": "string",
+            "format": "date-time"
+        },
+        "support":
+        {
+            "$ref": "#/definitions/anyUri"
+        },
+        "base":
+        {
+            "$ref": "#/definitions/anyUri" 
+        },
+        "links":
+        {
+            "$ref": "#/definitions/links"
+        },
+        "forms": 
+        {
+            "type": "array",
+            "minItems": 1,
+            "items": 
+            {
+                "$ref": "#/definitions/form_root_element"
+            }
+        },
+        "properties": 
+        {
+            "type": "object",
+            "additionalProperties": 
+            {
+                "$ref": "#/definitions/property_element"
+            }
+        },
+        "actions": 
+        {
+            "type": "object",
+            "additionalProperties": 
+            {
+                "$ref": "#/definitions/action_element"
+            }
+        },
+        "events": 
+        {
+            "type": "object",
+            "additionalProperties": 
+            {
+                "$ref": "#/definitions/event_element"
+            }
+        }
+    },
+    "required":
+    [
+        "title",
+        "@context",
+        "security",
+        "securityDefinitions"
+    ],
+    "additionalProperties": true
+}

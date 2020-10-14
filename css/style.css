@@ -1,0 +1,59 @@
+body{
+    padding: 0;
+    overflow-y: hidden;
+}
+
+.labels {
+    color: white;
+}
+
+.upper_buttons {
+    border-radius: 5px;
+    background: lightblue;
+}
+
+#content{
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    bottom: 300px;
+}
+
+#leftbar{
+    background-color:#eee;
+    position: absolute;
+    width: 65vw;
+    height: 100%;
+    overflow:auto;
+}
+
+#rightbar{
+    background-color:#eee;
+    padding-left: 65vw;
+    height: 100%;
+    /* overflow: auto; */
+    /* position: relative; */
+}
+
+#builder {
+    overflow: auto;
+    max-height: 100%;
+}
+
+#footer{
+    background-color:#777;
+    position: absolute;
+    height: 300px;
+    width: 100%;
+    bottom:0;
+}
+
+#terminal_holder {
+    height: 300px;
+}
+
+#hide_show {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
