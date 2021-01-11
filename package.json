@@ -21,12 +21,13 @@
   "dependencies": {
     "@angular/cli": "^9.1.6",
     "@json-editor/json-editor": "^2.2.1",
-    "jszip": "3.5.0",
     "ace-builds": "1.4.11",
+    "bootstrap": "4.5.0",
+    "font-awesome": "4.7.0",
+    "handlebars": "^4.7.6",
     "jquery": "^3.5.1",
     "jquery-ui-dist": "1.12.1",
-    "xterm": "^4.6.0",
-    "bootstrap": "4.5.0",
-    "font-awesome": "4.7.0"
+    "jszip": "3.5.0",
+    "xterm": "^4.6.0"
   }
 }
