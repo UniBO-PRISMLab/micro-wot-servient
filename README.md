@@ -27,7 +27,7 @@ This package is only supported by Linux systems.
 Clone the repository:
 
 ```shell
-git clone https://github.com/Chello/WoT-microcontroller-servient-GUI.git
+git clone git@github.com:UniBO-PRISMLab/micro-wot-servient.git
 ```
 
 Go into the repository:
