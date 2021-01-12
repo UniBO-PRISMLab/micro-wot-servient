@@ -1672,8 +1672,8 @@ def prepareArduinoEnvironment(ctx):
         os.chdir(home) 
         c = 'curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh'
         click.echo()
-        pr1 = sp.Popen(shlex.split(c), universal_newlines=True, check=True, stdout=sp.PIPE)
-        pr2 = sp.Popen(['sh'], universal_newlines=True,  check=True, stdin=pr1.stdout)
+        pr1 = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr2 = sp.Popen(['sh'], universal_newlines=True, stdin=pr1.stdout)
         pr2.wait()
     # verify that the arduino-cli configuration file is created
     configFile = home + '/.arduino15/arduino-cli.yaml'
@@ -1706,7 +1706,7 @@ def prepareArduinoEnvironment(ctx):
             break
         if output:
             click.echo(output.strip())
-    # install esp8266 core
+    # install esp8266  or esp32 core
     c = ''
     if template.name == "esp32.txt":
         c = 'arduino-cli core install esp32:esp32'    
@@ -1726,6 +1726,7 @@ def prepareArduinoEnvironment(ctx):
     c = 'arduino-cli lib install "ArduinoJson"'
     pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
     pr.wait()
+    #download 
     click.echo('\nHint: Each libraries used in the Embedded-C File MUST be installed')
     click.echo('It is necessary to provide the exact name of the library to install')
     click.echo('The path of arduino-cli libraries is %s' % library_path)
@@ -1751,11 +1752,42 @@ def prepareArduinoEnvironment(ctx):
             click.echo(pr.communicate()[0])
             input("Press Enter to continue...")
     os.chdir(library_path)
+
+    if not os.path.isdir(library_path + 'CoAP-simple-library'):
+        click.echo('Installing CoAP-simple-library from GitHub')
+        c = 'git clone https://github.com/hirotakaster/CoAP-simple-library.git'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+
+    if not os.path.isdir(library_path + 'AsyncTCP'):
+        click.echo('Installing AsyncTCP from GitHub')
+        c = 'git clone https://github.com/me-no-dev/AsyncTCP.git'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+
     if not os.path.isdir(library_path + 'ESPAsyncWebServer'):
         click.echo('Installing ESPAsyncWebServer from GitHub')
         c = 'git clone https://github.com/me-no-dev/ESPAsyncWebServer.git'
         pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
         pr.wait()
+
+    if not os.path.isdir(library_path + 'embeddedWoT_HTTP_LongPoll'):
+        click.echo('Installing HTTP_LongPoll from GitHub')
+        c = 'git clone https://github.com/Chello/embeddedWoT_HTTP_LongPoll'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+
+    if not os.path.isdir(library_path + 'embeddedWoT_WebSocket'):
+        click.echo('Installing WebSocket from GitHub')
+        c = 'git clone https://github.com/Chello/embeddedWoT_WebSocket'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+    if not os.path.isdir(library_path + 'embeddedWoT_CoAP'):
+        click.echo('Installing CoAP from GitHub')
+        c = 'git clone https://github.com/Chello/embeddedWoT_CoAP'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+
     os.chdir(cwd)    
     global environmentPrepared
     environmentPrepared = True

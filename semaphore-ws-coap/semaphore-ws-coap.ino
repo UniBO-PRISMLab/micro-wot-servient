@@ -7,8 +7,8 @@
 #include <coap-simple.h>
 #include <WebSocketsClient.h>
 
-const char* ssid = "Rachelli-net";
-const char* password = "3eKLtrdFwfQXgpv!";
+const char* ssid = "Net0";
+const char* password = "aaabbbccc";
 String protocolServer = "http";
 int portServer = 80;
 String urlServer = "";
