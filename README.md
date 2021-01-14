@@ -21,8 +21,17 @@ This package is only supported by Linux systems.
 - pip3 Python package manager
 - A proper C/C++ compiler toolchain, like GCC
 - git
+- Arduino IDE toolkit (the component used is arduino-cli)
 
 ## Usage
+
+### Install software dependencies
+Install needed software from repos
+```shell
+sudo apt update && sudo apt upgrade -y
+sudo apt install git python3 python3-pip npm nodejs git arduino -y
+```
+
 ### Clone and install
 Clone the repository:
 
