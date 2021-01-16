@@ -22,15 +22,18 @@ This package is only supported by Linux systems.
 - A proper C/C++ compiler toolchain, like GCC
 - git
 - Arduino IDE toolkit (the component used is arduino-cli)
+- curl
 
 ## Usage
 
 ### Install software dependencies
-Install needed software from repos
+Install needed software from repos:
 ```shell
 sudo apt update && sudo apt upgrade -y
-sudo apt install git python3 python3-pip npm nodejs git arduino -y
+sudo apt install git python3 python3-pip npm nodejs git arduino curl -y
 ```
+Please note that some Arduino packages are outdated if picked from official distros repositories.
+We suggest to download and install the latest Arduino-IDE toolkit from the official Arduino website.
 
 ### Clone and install
 Clone the repository:
