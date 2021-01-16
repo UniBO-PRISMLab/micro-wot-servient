@@ -1698,7 +1698,7 @@ def prepareArduinoEnvironment(ctx):
         with open(configFile, 'w') as yamlFile:
             yaml.dump(yamlDict, yamlFile)     
     # update core index        
-    c = 'arduino-cli core update-index'
+    c = 'arduino-cli core update-index --additional-urls https://dl.espressif.com/dl/package_esp32_index.json,http://arduino.esp8266.com/stable/package_esp8266com_index.json'
     pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
     while True:
         output = pr.stdout.readline()
