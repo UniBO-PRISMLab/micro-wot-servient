@@ -1706,8 +1706,10 @@ def prepareArduinoEnvironment(ctx):
             break
         if output:
             click.echo(output.strip())
+    # set right board repos
+    c = 'arduino --pref "boardsmanager.additional.urls=https://adafruit.github.io/arduino-board-index/package_adafruit_index.json" --save-prefs'
+    pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
     # install esp8266  or esp32 core
-    c = ''
     if template.name == "esp32.txt":
 #        c = 'arduino-cli core install esp32:esp32:esp32doit-devkit-v1'    
         c = 'arduino-cli core install esp32:esp32 --additional-urls https://dl.espressif.com/dl/package_esp32_index.json,http://arduino.esp8266.com/stable/package_esp8266com_index.json'
