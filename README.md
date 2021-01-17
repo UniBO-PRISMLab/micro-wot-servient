@@ -50,7 +50,7 @@ cd WoT-microcontroller-servient-GUI
 Install the package and all dependencies:
 
 ```shell
-pip install .
+sudo pip3 install .
 npm install
 ```
 

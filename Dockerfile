@@ -1,32 +1,24 @@
+   FROM node:10.21.0
 
-FROM ubuntu
+   COPY . /usr/scr/wot
 
-RUN apt update
+   #RUN rm bdstart.sh
+   RUN apt-get update
 
-RUN apt -y install \
-    # npm \
-	gcc \
-	make \
-    python3 \
-    python3-pip \
-    git \
-    npm \
-    libgtkextra-dev libgconf2-dev libnss3 libasound2 libxtst-dev libxss1
+   # I think you need to install following 
+   #RUN apt-get -y install libgtkextra-dev libgconf2-dev libnss3 libasound2 libxtst-dev libxss1
+   RUN apt-get -y install git python3 python3-pip git arduino curl libxss1
 
-# ARG BUILD_ENV=development
+   # i think you need to run these commands:
+   RUN curl https://downloads.arduino.cc/arduino-1.8.13-linux64.tar.xz -o /usr/src/arduino.tar.xz
+   RUN tar -xvf /usr/src/arduino.tar.xz -C /usr/src/
+   RUN /usr/src/arduino-1.8.13/install.sh
 
-WORKDIR /home/wot/app
+   #RUN xhost local:root
 
-COPY . .
+   WORKDIR /usr/scr/wot
 
-RUN npm install --save-dev electron
+   RUN pip3 install .
+   RUN npm install .
 
-RUN npm install \
-    && pip3 install . 
-    # && if [ "${BUILD_ENV}" = "production" ]; then node_modules/.bin/lerna exec "npm prune --production"; fi \
-    # && npm run link
-
-# EXPOSE 8080
-
-#ENTRYPOINT [ "/bin/sh" ]
-CMD [ "npm", "start" ]
+   CMD ["npm", "start"]
