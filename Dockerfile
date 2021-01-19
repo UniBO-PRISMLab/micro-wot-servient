@@ -1,24 +1,46 @@
    FROM node:10.21.0
 
-   COPY . /usr/scr/wot
-
    #RUN rm bdstart.sh
    RUN apt-get update
 
    # I think you need to install following 
    #RUN apt-get -y install libgtkextra-dev libgconf2-dev libnss3 libasound2 libxtst-dev libxss1
-   RUN apt-get -y install git python3 python3-pip git arduino curl libxss1
+   RUN apt-get -y install git python python3 python3-pip git libxtst6 curl libxss1 libgl1-mesa-glx libgl1-mesa-dri arduino
+   RUN apt purge -y arduino
+   # RUN xhost local:root
+   # RUN useradd -ms /bin/bash -d /usr/src/wot user
+   RUN usermod -a -G video node
+   RUN usermod -a -G dialout node
 
+   ENV BINDIR=/usr/local/bin
    # i think you need to run these commands:
-   RUN curl https://downloads.arduino.cc/arduino-1.8.13-linux64.tar.xz -o /usr/src/arduino.tar.xz
-   RUN tar -xvf /usr/src/arduino.tar.xz -C /usr/src/
-   RUN /usr/src/arduino-1.8.13/install.sh
+   RUN echo $PATH
+   RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 
-   #RUN xhost local:root
+   # RUN ls -la /usr/src/wot
+   #RUN tar -xvf /usr/src/arduino.tar.xz -C /usr/src/
+   #RUN /usr/src/arduino-1.8.13/install.sh
 
-   WORKDIR /usr/scr/wot
+   COPY --chown=node . /home/node
+   WORKDIR /home/node
+
+   RUN chmod -R 777 .
 
    RUN pip3 install .
-   RUN npm install .
+
+   USER node
+
+   RUN arduino-cli config init
+   RUN npm install
+
+   USER root
+
+   RUN chown root:root node_modules/electron/dist/chrome-sandbox
+   RUN chmod 4755 node_modules/electron/dist/chrome-sandbox
+
+   # USER user
+
+   ENV LC_ALL=C.UTF-8
+   ENV LANG=C.UTF-8
 
    CMD ["npm", "start"]

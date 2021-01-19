@@ -9,7 +9,7 @@ setup(
     description='WoT module for build TDs and executable scripts for embedded systems',
     long_description=open('README.md').read(),
     py_modules=['embeddedWoTServient'],
-    install_requires=['Click','jinja2','pyyaml','jsonschema','pyserial', 'serial'],
+    install_requires=['Click','jinja2','pyyaml','jsonschema','pyserial', 'serial', 'click'],
     entry_points='''
         [console_scripts]
         embeddedWoTServient=embeddedWoTServient:cli

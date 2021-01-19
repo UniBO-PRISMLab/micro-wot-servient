@@ -1684,7 +1684,7 @@ def prepareArduinoEnvironment(ctx):
     # verify that the esp core is installed in arduino-cli    
     coreUrl = ''
     if template.name == "esp32.txt":
-        coreUrl = 'https://raw.githubusercontent.com/espressif/arduino-esp32/master/package/package_esp32_index.template.json'
+        coreUrl = 'https://raw.githubusercontent.com/espressif/arduino-esp32/master/package/package_esp32_index.template.json' 
     elif template.name == "esp8266.txt":
         coreUrl = 'https://arduino.esp8266.com/stable/package_esp8266com_index.json'
     yamlDict = yaml.load(open(configFile, 'r'), Loader=yaml.FullLoader)   
@@ -1697,6 +1697,12 @@ def prepareArduinoEnvironment(ctx):
         yamlDict['board_manager']['additional_urls'].append(coreUrl)
         with open(configFile, 'w') as yamlFile:
             yaml.dump(yamlDict, yamlFile)     
+
+    os.chdir(home + '/.arduino15/')
+    c = 'curl -O '+ coreUrl
+    pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+    pr.wait()
+    os.chdir(home)
     # update core index        
     c = 'arduino-cli core update-index --additional-urls https://dl.espressif.com/dl/package_esp32_index.json,http://arduino.esp8266.com/stable/package_esp8266com_index.json'
     pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
@@ -1707,9 +1713,9 @@ def prepareArduinoEnvironment(ctx):
         if output:
             click.echo(output.strip())
     # set right board repos
-    c = 'arduino --pref "boardsmanager.additional.urls=https://adafruit.github.io/arduino-board-index/package_adafruit_index.json" --save-prefs'
-    pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
-    pr.wait()
+    # c = 'arduino-cli --pref "boardsmanager.additional.urls=https://adafruit.github.io/arduino-board-index/package_adafruit_index.json" --save-prefs'
+    # pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+    # pr.wait()
     # install esp8266  or esp32 core
     if template.name == "esp32.txt":
 #        c = 'arduino-cli core install esp32:esp32:esp32doit-devkit-v1'    
