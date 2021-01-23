@@ -6,7 +6,7 @@
    # I think you need to install following 
    #RUN apt-get -y install libgtkextra-dev libgconf2-dev libnss3 libasound2 libxtst-dev libxss1
    RUN apt-get -y install git python3 python3-pip git libxtst6 curl libxss1 libgl1-mesa-glx libgl1-mesa-dri arduino
-   RUN apt purge -y arduino
+   #RUN apt purge -y arduino
    # RUN xhost local:root
    # RUN useradd -ms /bin/bash -d /usr/src/wot user
    RUN usermod -a -G video node

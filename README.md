@@ -66,6 +66,19 @@ The application can be started with the following command:
 npm start
 ```
 
+### Use with Docker 
+With this repository a Dockerfile is provided. This dockerfile generates a new image working with wot.
+
+```shell
+cd micro-wot-servient #enter in the main project directory
+docker build . -t wot 
+```
+
+For make it run:
+```shell
+docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --user=$(id -u $USER):$(id -g $USER) --device=/dev/dri:/dev/dri wot
+```
+
 ### Implemented/supported features
 
 **Scripting API**
