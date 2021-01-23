@@ -1770,6 +1770,12 @@ def prepareArduinoEnvironment(ctx):
         pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
         pr.wait()
 
+    if not os.path.isdir(library_path + 'ArduinoJson'):
+        click.echo('Installing ArduinoJson from GitHub')
+        c = 'git clone https://github.com/bblanchon/ArduinoJson.git'
+        pr = sp.Popen(shlex.split(c), universal_newlines=True, stdout=sp.PIPE)
+        pr.wait()
+
     if not os.path.isdir(library_path + 'AsyncTCP'):
         click.echo('Installing AsyncTCP from GitHub')
         c = 'git clone https://github.com/me-no-dev/AsyncTCP.git'
