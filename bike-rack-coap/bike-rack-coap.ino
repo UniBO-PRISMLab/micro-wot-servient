@@ -4,8 +4,8 @@
 #include <WiFi.h>
 #include <embeddedWoT_CoAP.h>
 
-const char* ssid = "Rachelli-net";
-const char* password = "3eKLtrdFwfQXgpv!";
+const char* ssid = "Net0";
+const char* password = "aaabbbccc";
 String protocolCoap = "coap";
 int portCoap = 5683;
 String urlCoap = "";
@@ -31,11 +31,11 @@ JsonArray property0_value = property0_jdoc.to<JsonArray>();
 
 // Actions
 const char* action1_name = "isParkFree";
-int action1_inputsNumber = 1;
-String action1_schema[1] = {"{\"name\":\"rack_num\",\"type\":\"integer\"}"};
+int action1_inputsNumber = 0;
+String action1_schema[0] = {};
 const char* action2_name = "changeParkState";
-int action2_inputsNumber = 1;
-String action2_schema[1] = {"{\"name\":\"park\",\"type\":\"integer\"}"};
+int action2_inputsNumber = 0;
+String action2_schema[0] = {};
 
 // Events
 const char* event1_name = "hasParkChanged";
@@ -121,7 +121,7 @@ void setup() {
   
     connection(ssid, password);
     
-    td = "{\"title\":\"bike-rack-coap\",\"id\":\"bike-rack-coap\",\"@context\":[\"https://www.w3.org/2019/wot/td/v1\"],\"security\":\"nosec_sc\",\"securityDefinitions\":{\"nosec_sc\":{\"scheme\":\"nosec\"}},\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/all/properties\",\"op\":[\"readallproperties\",\"readmultipleproperties\"]}],\"links\":[],\"properties\":{\"parks\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/properties/"+property0_name+"\",\"op\":[\"readproperty\"]}],\"type\":\"array\",\"items\":{\"type\":\"boolean\"},\"observable\":false,\"readOnly\":true,\"writeOnly\":true}},\"actions\":{\"isParkFree\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/actions/"+action1_name+"\",\"op\":\"invokeaction\"}],\"input\":{\"rack_num\":{\"type\":\"integer\"}},\"output\":{\"type\":\"boolean\"},\"safe\":true,\"idempotent\":false},\"changeParkState\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/actions/"+action2_name+"\",\"op\":\"invokeaction\"}],\"input\":{\"park\":{\"type\":\"integer\"}},\"output\":{\"type\":\"string\"},\"safe\":false,\"idempotent\":false}},\"events\":{\"hasParkChanged\":{\"eventName\":\"hasParkChanged\",\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/events/"+event1_name+"\",\"op\":[\"subscribeevent\",\"unsubscribeevent\"]}],\"actionsTriggered\":[\"changeParkState\"],\"condition\":\"true\"}}}";
+    td = "{\"title\":\"bike-rack-coap\",\"id\":\"bike-rack-coap\",\"@context\":[\"https://www.w3.org/2019/wot/td/v1\"],\"security\":\"nosec_sc\",\"securityDefinitions\":{\"nosec_sc\":{\"scheme\":\"nosec\"}},\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/all/properties\",\"op\":[\"readallproperties\",\"readmultipleproperties\"]}],\"links\":[],\"properties\":{\"parks\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/properties/"+property0_name+"\",\"op\":[\"readproperty\"]}],\"type\":\"array\",\"items\":{\"type\":\"boolean\"},\"observable\":false,\"readOnly\":true,\"writeOnly\":true}},\"actions\":{\"isParkFree\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/actions/"+action1_name+"\",\"op\":\"invokeaction\"}],\"safe\":true,\"idempotent\":false},\"changeParkState\":{\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/actions/"+action2_name+"\",\"op\":\"invokeaction\"}],\"safe\":false,\"idempotent\":false}},\"events\":{\"hasParkChanged\":{\"eventName\":\"hasParkChanged\",\"forms\":[{\"contentType\":\"application/json\",\"href\":\""+urlCoap+"/events/"+event1_name+"\",\"op\":[\"subscribeevent\",\"unsubscribeevent\"]}],\"actionsTriggered\":[\"changeParkState\"],\"condition\":\"true\"}}}";
 
     coap = new embeddedWoT_CoAP(portCoap);
 
@@ -184,7 +184,7 @@ void connection(const char* ssid, const char* password) {
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
         Serial.print(".");
-//        WiFi.begin(ssid, password);
+        WiFi.begin(ssid, password);
     }
 
     Serial.println("\nConnected");
@@ -233,7 +233,7 @@ String request4() {
 }
 
 String request5(String body) {
-    DynamicJsonDocument resp_doc(200);
+    DynamicJsonDocument resp_doc(20);
     String resp = "";
 
     Serial.printf("\nPOST invokeaction %s\n", action1_name);
@@ -246,46 +246,13 @@ String request5(String body) {
         return resp;
     }
     else {
-        if(resp_doc["rack_num"].isNull())
-            resp = "InvalidInput";
-        else {
-            bool validInput = true;
-            String value = "";
-
-            String action1_input[1] = {};    
-            int action1_input1_value = 0;
-
-            i = 0;
-            while(validInput and i<action1_inputsNumber) {
-                switch(i) {
-                    case 0: {
-                        value = "";
-                        serializeJson(resp_doc["rack_num"], value);
-                        action1_input[0] = value;
-                        validInput = handleInputType(value,action1_schema[0]);
-                    }
-                    break;
-
-                }
-                i++;
-            }    
-
-            if(validInput) {
-
-                action1_input1_value = action1_input[0].toInt();
-
-                bool output = isParkFree(action1_input1_value);    
-                resp = (String) output;
-                String ws_msg = "";
-            }
-            else
-                resp = "InvalidInput";
-        }
+        isParkFree(); 
+        resp = "";
     }
     return resp;
 }
 String request6(String body) {
-    DynamicJsonDocument resp_doc(200);
+    DynamicJsonDocument resp_doc(20);
     String resp = "";
 
     Serial.printf("\nPOST invokeaction %s\n", action2_name);
@@ -298,44 +265,12 @@ String request6(String body) {
         return resp;
     }
     else {
-        if(resp_doc["park"].isNull())
-            resp = "InvalidInput";
-        else {
-            bool validInput = true;
-            String value = "";
-
-            String action2_input[1] = {};    
-            int action2_input1_value = 0;
-
-            i = 0;
-            while(validInput and i<action2_inputsNumber) {
-                switch(i) {
-                    case 0: {
-                        value = "";
-                        serializeJson(resp_doc["park"], value);
-                        action2_input[0] = value;
-                        validInput = handleInputType(value,action2_schema[0]);
-                    }
-                    break;
-
-                }
-                i++;
-            }    
-
-            if(validInput) {
-
-                action2_input1_value = action2_input[0].toInt();
-
-                String output = changeParkState(action2_input1_value);    
-                resp = (String) output;
-                String ws_msg = "";
-
-                // hasParkChanged condition
-                if(true) {
-                }
-            }
-            else
-                resp = "InvalidInput";
+        changeParkState(); 
+        resp = "";
+        // hasParkChanged condition
+        String ws_msg = "";
+         if(true) {
+            
         }
     }
     return resp;
@@ -343,7 +278,7 @@ String request6(String body) {
 
 // handle Input Types
 bool handleInputType(String value, String schema) {   
-	DynamicJsonDocument schema_doc(200);
+	DynamicJsonDocument schema_doc(20);
     bool validInput = true;
 
     deserializeJson(schema_doc, schema);
@@ -355,20 +290,6 @@ bool handleInputType(String value, String schema) {
     if(value[value.length()-1] == '"')    
         value.remove(value.length()-1);
     
-		if(type.equals("integer") || type.equals("number")) {
-        int dot_count = 0;
-        i = 0;
-        while(validInput && i<value.length()) {
-            if(!isDigit(value[i])) 
-                validInput = false;
-            else if(value[i] == '.')
-                if(i == 0 || i == value.length()-1 || dot_count > 1)
-                    validInput = false;
-                else 
-                    dot_count++;    
-            i++;          
-        } 
-    }
     return validInput;
 }
 
@@ -378,12 +299,12 @@ void emitEvent(String txt, String event_endpoint) {
 }
 
 // Action functions
-bool isParkFree(int rack_num) {
+void isParkFree() {
 	return property0_value[rack_num].as<bool>();
 	
 }
 
-String changeParkState(int park) {
+void changeParkState() {
 	// char s[25];
 	
 property0_value[park] = !property0_value[park];
@@ -401,3 +322,4 @@ property0_value[park] = !property0_value[park];
 return request4();
 	
 }
+
