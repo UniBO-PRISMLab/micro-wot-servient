@@ -7,8 +7,8 @@
 #include <coap-simple.h>
 #include <WebSocketsClient.h>
 
-const char* ssid = "Socc'mel Busàn";
-const char* password = "chellol96";
+const char* ssid = "Rachelli-net";
+const char* password = "3eKLtrdFwfQXgpv!";
 String protocolServer = "http";
 int portServer = 80;
 String urlServer = "";
@@ -444,4 +444,3 @@ void statusChanged() {
 	return;
 	
 }
-
