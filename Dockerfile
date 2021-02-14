@@ -38,6 +38,7 @@
 
    RUN chown root:root node_modules/electron/dist/chrome-sandbox
    RUN chmod 4755 node_modules/electron/dist/chrome-sandbox
+   RUN chmod 777 /dev/ttyUSB0
 
    # USER user
 

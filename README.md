@@ -74,9 +74,9 @@ cd micro-wot-servient #enter in the main project directory
 docker build . -t wot 
 ```
 
-For make it run:
+For make it run (change/add devices you want to upload to. In this example /dev/ttyUSB0 is used):
 ```shell
-docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --user=$(id -u $USER):$(id -g $USER) --device=/dev/dri:/dev/dri wot
+docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --user=$(id -u $USER):$(id -g $USER) --device=/dev/dri:/dev/dri --device=/dev/ttyUSB0 wot
 ```
 
 ### Implemented/supported features
